@@ -6,3 +6,7 @@ Assembly project for jupyterhub related components
 ```bash
 make update-all
 ```
+
+## Sub projects
+
+* [Jupyterhub extensions](https://github.com/statisticsnorway/jupyterhub-extensions)
