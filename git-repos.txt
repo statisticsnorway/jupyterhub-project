@@ -1,1 +1,2 @@
 jupyterhub-extensions
+jupyterhub-gcp
