@@ -9,7 +9,7 @@ trigger:
       - '*'
   paths:
     include:
-      - jupyterhub
+      - docker/jupyterhub
 
 resources:
   repositories:
