@@ -83,7 +83,7 @@ jobs:
           mavenAuthenticateFeed: false
 
       # Publish pipeline artifact
-      - publish: target
+      - publish: build/target
         displayName: 'Publish artifact to pipeline'
         artifact: spark-plugin-libs
 
