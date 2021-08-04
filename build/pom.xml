@@ -15,9 +15,9 @@
     <!-- Empty artifact -->
     <dependencies>
         <dependency>
-            <groupId>no.ssb.dapla.spark.plugin</groupId>
-            <artifactId>dapla-spark-plugin</artifactId>
-            <version>0.5.0</version>
+            <groupId>no.ssb.dapla.gcs</groupId>
+            <artifactId>access-token-provider</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
             <classifier>shaded</classifier>
             <scope>compile</scope>
         </dependency>
@@ -40,15 +40,15 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>no.ssb.dapla.spark.plugin</groupId>
-                                    <artifactId>dapla-spark-plugin</artifactId>
-                                    <version>0.5.0</version>
+                                    <groupId>no.ssb.dapla.gcs</groupId>
+                                    <artifactId>access-token-provider</artifactId>
+                                    <version>0.0.1-SNAPSHOT</version>
                                     <classifier>shaded</classifier>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.google.cloud.bigdataoss</groupId>
                                     <artifactId>gcs-connector</artifactId>
-                                    <version>hadoop2-2.1.5</version>
+                                    <version>hadoop3-2.2.1</version>
                                     <classifier>shaded</classifier>
                                 </artifactItem>
                             </artifactItems>
@@ -71,15 +71,15 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>no.ssb.dapla.spark.plugin</groupId>
-                                    <artifactId>dapla-spark-plugin</artifactId>
-                                    <version>0.5.0</version>
+                                    <groupId>no.ssb.dapla.gcs</groupId>
+                                    <artifactId>access-token-provider</artifactId>
+                                    <version>0.0.1-SNAPSHOT</version>
                                     <classifier>shaded</classifier>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.google.cloud.bigdataoss</groupId>
                                     <artifactId>gcs-connector</artifactId>
-                                    <version>hadoop2-2.1.5</version>
+                                    <version>hadoop3-2.2.1</version>
                                     <classifier>shaded</classifier>
                                 </artifactItem>
                             </artifactItems>
