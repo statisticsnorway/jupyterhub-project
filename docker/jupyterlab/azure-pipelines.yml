@@ -3,7 +3,7 @@ name: $(Build.SourceBranch)-$(date:yyyyMMdd)$(rev:.r)
 trigger:
   branches:
     include:
-      - '*'
+      - 'main'
   tags:
     include:
       - '*'
@@ -23,7 +23,7 @@ resources:
 
     # Pipeline will be run on this base image
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'extended_storage'
 
 # Variables global to this pipeline
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables
@@ -91,6 +91,8 @@ jobs:
   # Job which builds Docker image, pushes this to GCR and checks for any image vulnerabilities
   # NOTE: Sub-project pipelines are still running with the root working directory
   - job: dockerBuildAndDockerPush
+    timeoutInMinutes: 150 # how long to run the job before automatically cancelling
+    condition: eq(False, startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     displayName: 'Build Docker image for jupyterlab'
     dependsOn: pullSparkPlugin
     steps:
@@ -151,6 +153,12 @@ jobs:
 
       - script: |
           cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
+          docker images | grep none | awk '{ print $3; }' | xargs docker rmi
+        displayName: Remove dangling docker images
+        continueOnError: true # for first build, no cache
+
+      - script: |
+          cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
           docker pull ${{ variables.imageName }}:${{ variables.imageNotebookLatest }}
         displayName: Pull latest for layer caching
         continueOnError: true # for first build, no cache
@@ -183,6 +191,12 @@ jobs:
           cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
           docker pull ${{ variables.imageName }}:${{ variables.imageTagLatest }}
         displayName: Pull latest for layer caching
+        continueOnError: true # for first build, no cache
+
+      - script: |
+          cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
+          docker images | grep none | awk '{ print $3; }' | xargs docker rmi
+        displayName: Remove dangling docker images
         continueOnError: true # for first build, no cache
 
       # Build Docker final image with cache
@@ -248,4 +262,3 @@ jobs:
     parameters:
       tagToTag: 'master-$(fullSha)'
       gcrImageName: ${{ variables.imageName }}
-
