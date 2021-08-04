@@ -9,9 +9,9 @@ trigger:
       - '*'
   paths:
     exclude:
-      - jupyterhub
-      - spark-py
-      - spark-r
+      - docker/jupyterhub
+      - docker/spark-py
+      - docker/spark-r
 
 resources:
   repositories:

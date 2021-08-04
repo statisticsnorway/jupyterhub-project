@@ -9,7 +9,7 @@ trigger:
       - '*'
   paths:
     include:
-      - spark-r
+      - docker/spark-r
 
 resources:
   repositories:
