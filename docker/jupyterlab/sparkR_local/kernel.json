@@ -1,0 +1,17 @@
+{
+  "display_name": "SparkR (local)",
+  "language": "R",
+  "argv": [
+    "/opt/conda/bin/R",
+    "--slave",
+    "-e",
+    "IRkernel::main()",
+    "--args",
+    "{connection_file}"
+  ],
+  "env": {
+    "SPARK_HOME": "/usr/local/spark",
+    "SPARKR_SUBMIT_ARGS": "${SPARKR_LOCAL_SUBMIT_ARGS}",
+    "R_PROFILE_USER" : "/opt/conda/share/jupyter/kernels/ir/Rstartup"
+  }
+}

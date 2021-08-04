@@ -31,4 +31,5 @@ hs_err_pid*
 .idea/
 target/
 /jupyterhub-extensions
+/jupyterhub-gcp
 

@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>no.ssb.dapla</groupId>
+    <artifactId>dapla-gcp-jupyter</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- Empty artifact -->
+    <dependencies>
+        <dependency>
+            <groupId>no.ssb.dapla.spark.plugin</groupId>
+            <artifactId>dapla-spark-plugin</artifactId>
+            <version>0.5.0</version>
+            <classifier>shaded</classifier>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- Fetch latest dapla spark plugin to be included in docker build -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>no.ssb.dapla.spark.plugin</groupId>
+                                    <artifactId>dapla-spark-plugin</artifactId>
+                                    <version>0.5.0</version>
+                                    <classifier>shaded</classifier>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.google.cloud.bigdataoss</groupId>
+                                    <artifactId>gcs-connector</artifactId>
+                                    <version>hadoop2-2.1.5</version>
+                                    <classifier>shaded</classifier>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>target/</outputDirectory>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies-for-local-docker</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>no.ssb.dapla.spark.plugin</groupId>
+                                    <artifactId>dapla-spark-plugin</artifactId>
+                                    <version>0.5.0</version>
+                                    <classifier>shaded</classifier>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.google.cloud.bigdataoss</groupId>
+                                    <artifactId>gcs-connector</artifactId>
+                                    <version>hadoop2-2.1.5</version>
+                                    <classifier>shaded</classifier>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>jupyter/</outputDirectory>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>ssb-bip</id>
+            <repositories>
+                <repository>
+                    <id>ssb-bip-releases</id>
+                    <url>https://nexus.prod-bip-ci.ssb.no/repository/maven-public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <distributionManagement>
+                <repository>
+                    <id>ssb-bip-releases</id>
+                    <name>SSB Nexus Releases</name>
+                    <url>https://nexus.prod-bip-ci.ssb.no/repository/maven-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>ssb-bip-snapshots</id>
+                    <name>SSB Snapshot Repository</name>
+                    <url>https://nexus.prod-bip-ci.ssb.no/repository/maven-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+</project>

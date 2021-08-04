@@ -1,0 +1,20 @@
+{
+  "display_name": "Pyspark (local)",
+  "language": "python",
+  "argv": [
+    "python",
+    "-m",
+    "ipykernel_launcher",
+    "-f",
+    "{connection_file}"
+  ],
+  "env": {
+    "SPARK_HOME": "/usr/local/spark",
+    "PYTHONPATH": "/usr/local/spark/python:/usr/local/spark/python/lib/py4j-0.10.9-src.zip",
+    "PYTHON_EXEC": "python",
+    "PYSPARK_DRIVER_PYTHON": "jupyter",
+    "PYSPARK_PYTHON": "python3",
+    "PYSPARK_SUBMIT_ARGS": "${PYSPARK_LOCAL_SUBMIT_ARGS}",
+    "PYTHONSTARTUP": "/usr/local/share/jupyter/kernels/pyspark_local/init.py"
+  }
+}

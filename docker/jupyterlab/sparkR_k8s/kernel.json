@@ -1,0 +1,17 @@
+{
+  "display_name": "SparkR (k8s cluster)",
+  "language": "R",
+  "argv": [
+    "/opt/conda/bin/R",
+    "--slave",
+    "-e",
+    "IRkernel::main()",
+    "--args",
+    "{connection_file}"
+  ],
+  "env": {
+    "SPARK_HOME": "/usr/local/spark",
+    "SPARKR_SUBMIT_ARGS": "${SPARKR_K8S_SUBMIT_ARGS}",
+    "R_PROFILE_USER" : "/opt/conda/share/jupyter/kernels/ir/Rstartup"
+  }
+}

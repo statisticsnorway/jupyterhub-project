@@ -1,0 +1,204 @@
+# Image contains R and littler
+FROM rocker/r-base:4.0.3 AS ssb-r-packages
+
+RUN apt-get update -y \
+	&& apt-get install -y --no-install-recommends \
+		libglpk-dev \
+		libssl-dev \
+		libxml2-dev \
+	    libcurl4-openssl-dev \
+	&& rm -rf /var/lib/apt/lists/*
+
+ENV BASE_PACKAGES lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm
+ENV EXT_PACKAGES tables tidyverse docopt data.table sdcTable SmallCountRounding remotes configr
+ENV SSB_PACKAGES SSBtools easySdcTable RegSDC PxWebApiData klassR
+
+RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.method = "libcurl")' >> /etc/R/Rprofile.site \
+    && echo 'source("/etc/R/Rprofile.site")' >> /etc/littler.r \
+	&& install.r ${BASE_PACKAGES} ${EXT_PACKAGES} ${SSB_PACKAGES} \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+
+# Image contains Spark 3.0
+# jupyter/all-spark-notebook includes Python, R, and Scala support for Apache Spark.
+FROM jupyter/all-spark-notebook:95ccda3619d0 AS ssb-notebook-image
+
+# Install SSH client
+USER root
+
+RUN apt update && \
+    apt-get -y clean all && \
+    apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get -y dist-upgrade && \
+    apt-get install --no-install-recommends -y openssh-client r-cran-rglpk glpk-utils libglpk-dev libpoppler-cpp-dev \
+    zlib1g-dev libgit2-dev libtesseract-dev libleptonica-dev libgdal-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy R libraries from ssb-r-packages container
+COPY --from=ssb-r-packages /usr/local/lib/R/site-library /opt/conda/lib/R/library
+
+# Fix conda permission
+RUN chown -R $NB_UID:$NB_GID /opt/conda
+
+USER $NB_UID
+
+# Install R libraries from conda (the rest is copied from the ssb-r-packages container)
+RUN conda update -n base conda && \
+    conda install --quiet --yes r-reticulate r-rjava r-arrow r-devtools r-languageserver r-rgdal && \
+    conda clean --all -f -y
+
+# Create a conda env (r-reticulate) that enables R to execute Python code
+RUN conda create -y -n r-reticulate python=3.8.6 numpy
+
+# Depends on r-rjava
+RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
+RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)"
+RUN R -e "remotes::install_github('statisticsnorway/Kostra')"
+RUN rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+
+RUN echo "**** install jupyterlab-git ****" && \
+    python3 -m pip install --upgrade jupyterlab-git && \
+    echo "**** install nbdime ****" && \
+    python3 -m pip install --upgrade nbdime && \
+    jupyter labextension install --no-build nbdime-jupyterlab && \
+    echo "**** install nbstripout ****" && \
+    python3 -m pip install nbstripout && \
+    echo "**** install papermill ****" && \
+    python3 -m pip install papermill && \
+    echo "**** install ipywidgets ****" && \
+    python3 -m pip install ipywidgets && \
+    jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
+    jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
+    echo "**** install jupyter_server_proxy ****" && \
+    python3 -m pip install jupyter-server-proxy && \
+    jupyter serverextension enable --sys-prefix jupyter_server_proxy && \
+    echo "**** install holoviz panel ****" && \
+    python3 -m pip install panel && \
+    jupyter labextension install --no-build @pyviz/jupyterlab_pyviz && \
+    echo "**** install Voilà ****" && \
+    python3 -m pip install voila && \
+    jupyter labextension install --no-build @jupyter-voila/jupyterlab-preview && \
+    jupyter serverextension enable --sys-prefix voila && \
+    echo "**** install Plotly ****" && \
+    # JupyterLab renderer support
+    jupyter labextension install --no-build jupyterlab-plotly && \
+    # OPTIONAL: Jupyter widgets extension
+    jupyter labextension install --no-build plotlywidget && \
+    echo "**** install geopandas ****" && \
+    python3 -m pip install geopandas && \
+    echo "**** install ipyleaflet ****" && \
+    python3 -m pip install ipyleaflet && \
+    jupyter labextension install --no-build jupyter-leaflet && \
+    echo "**** install descartes ****" && \
+    python3 -m pip install descartes && \
+    echo "**** install dash ****" && \
+    python3 -m pip install jupyter-dash && \
+    jupyter labextension install --no-build jupyterlab-dash && \
+    echo "**** install streamlit ****" && \
+    python3 -m pip install streamlit && \
+    echo "**** install jupyter-lsp ****" && \
+    # Use jupyterlab-lsp instead of jupyter-lsp for Jupyterlab > 3.0
+    # python3 -m pip install jupyterlab-lsp==3.1.0 && \
+    python3 -m pip install jupyter-lsp && \
+    python3 -m pip install python-language-server[all] && \
+    echo "**** install ipysheet ****" && \
+    python3 -m pip install ipysheet && \
+    jupyter labextension install --no-build ipysheet && \
+    echo "**** install ipyaggrid ****" && \
+    python3 -m pip install ipyaggrid && \
+    jupyter labextension install --no-build ipyaggrid && \
+    echo "**** install qgrid ****" && \
+    python3 -m pip install qgrid && \
+    jupyter nbextension enable --py --sys-prefix qgrid && \
+    jupyter labextension install --no-build qgrid2 && \
+    echo "**** install fuzzywuzzy[speedup] ****" && \
+    python3 -m pip install fuzzywuzzy[speedup] && \
+    python3 -m pip cache purge && \
+    jupyter lab build
+
+RUN python3 -m pip install --upgrade jupyterhub==1.3.0 && \
+    jupyterhub upgrade-db
+
+FROM ssb-notebook-image
+
+# Copy the kernels. (pre-defined kernels are found at /opt/conda/share/jupyter/kernels)
+COPY pyspark_k8s /usr/local/share/jupyter/kernels/pyspark_k8s/
+COPY pyspark_local /usr/local/share/jupyter/kernels/pyspark_local/
+COPY sparkR_k8s/kernel.json /opt/conda/share/jupyter/kernels/ir_k8s/
+COPY sparkR_k8s/Rstartup /opt/conda/share/jupyter/kernels/ir_k8s/
+COPY sparkR_local/kernel.json /opt/conda/share/jupyter/kernels/ir/
+COPY sparkR_local/Rstartup /opt/conda/share/jupyter/kernels/ir/
+
+# See https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#startup-hooks
+COPY env.sh /usr/local/bin/before-notebook.d/env.sh
+COPY spark-defaults.conf /tmp/spark-defaults.conf
+
+USER root
+# Add extra config to jupyter_notebook_config.py
+COPY jupyter_notebook_extra_config.py /tmp/
+RUN cat /tmp/jupyter_notebook_extra_config.py >> /etc/jupyter/jupyter_notebook_config.py && \
+    rm -f /tmp/jupyter_notebook_extra_config.py
+
+RUN fix-permissions /usr/local/spark/conf
+USER $NB_UID
+
+# Experimental libraries
+RUN echo "**** install nbdev ****" && \
+    python3 -m pip install nbdev
+
+# pipenv is used for keeping track of and loading the specific package dependencies of each repository
+# Together with with envkernel Jupyter users can create Jupyter kernels with a different environment.
+RUN echo "**** install pipenv envkernel ****" && \
+    python3 -m pip install pipenv envkernel
+
+# Customer defined libraries
+RUN echo "**** install ssb_spark_tools ****" && \
+    python3 -m pip install ssb_spark_tools==0.1.1 pytest pytest_tornasync pyjstat xmltodict lxml holidays && \
+    echo "**** install ipython extensions" && \
+    python3 -m pip install ssb-ipython-kernels==0.2.25 gcsfs==0.6.2 pyarrow koalas
+
+COPY configure-git-config.bash /usr/local/bin/configure-git-config.bash
+COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
+COPY git-config.bash /usr/local/bin/git-config.sh
+COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
+COPY restart-ssh-agent.bash /usr/local/bin/restart-ssh-agent.sh
+
+COPY check-git-config.bash /usr/local/bin/check-git-config.sh
+
+# Copy the GCS connector.
+COPY gcs-connector-shaded.jar /jupyter/lib/gcs-connector-hadoop.jar
+# Copy the spark library
+COPY dapla-spark-plugin-shaded.jar /jupyter/lib/dapla-spark-plugin.jar
+
+# Install dapla cli:
+# - Install bash-completion
+# - Download latest release from github.
+# - Setup autocompletion
+# - Add aliases
+USER root
+RUN apt-get update -y && \
+    apt-get -y upgrade && \
+    apt-get install -y --no-install-recommends \
+        bash-completion && \
+    rm -rf /var/lib/apt/lists/*
+RUN mkdir /opt/dapla/ && curl --silent -L -o- https://github.com/statisticsnorway/dapla-cli/releases/download/0.0.9/dapla-cli-0.0.9-linux-amd64.tar.gz \
+   | tar xvz -C /opt/dapla
+RUN chmod +x /opt/dapla/dapla-cli
+COPY dapla-cli.yml /opt/dapla/.dapla-cli.yml
+RUN /opt/dapla/dapla-cli completion bash > /etc/bash_completion.d/dapla
+RUN echo "alias dapla='/opt/dapla/dapla-cli --config /opt/dapla/.dapla-cli.yml'" >> /etc/bash.bashrc
+RUN echo "alias lsd='dapla ls'" >> /etc/bash.bashrc
+RUN echo "alias rmd='dapla rm'" >> /etc/bash.bashrc
+
+# Install pipenv-kernel and delete-pipenv-kernel:
+# - Copy in scripts
+# - Add aliases
+# - Install jq, which is needed for the former
+COPY pipenv_kernel.bash /opt/dapla/pipenv_kernel.sh
+RUN chmod +x /opt/dapla/pipenv_kernel.sh
+RUN echo "alias pipenv-kernel='/opt/dapla/pipenv_kernel.sh'" >> /etc/bash.bashrc
+RUN apt-get update -y && \
+    apt-get -y upgrade && \
+    apt-get install -y jq
+USER $NB_UID
