@@ -50,9 +50,9 @@ variables:
 jobs:
   - job: dockerBuildAndDockerPush
     displayName: 'Build Docker image for Jupyterhub'
+    condition: eq(False, startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     steps:
       - template: docker/docker-build-image-and-push-to-gcr.yml@templates
-        condition: eq(False, startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
         parameters:
           project: dapla
           imageName: $(imageName)
