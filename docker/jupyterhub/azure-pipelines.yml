@@ -3,7 +3,7 @@ name: $(Build.SourceBranch)-$(date:yyyyMMdd)$(rev:.r)
 trigger:
   branches:
     include:
-      - '*'
+      - 'main'
   tags:
     include:
       - '*'
@@ -52,6 +52,7 @@ jobs:
     displayName: 'Build Docker image for Jupyterhub'
     steps:
       - template: docker/docker-build-image-and-push-to-gcr.yml@templates
+        condition: eq(False, startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
         parameters:
           project: dapla
           imageName: $(imageName)

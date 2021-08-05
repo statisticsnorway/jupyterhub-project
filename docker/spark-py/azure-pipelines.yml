@@ -3,7 +3,7 @@ name: $(Build.SourceBranch)-$(date:yyyyMMdd)$(rev:.r)
 trigger:
   branches:
     include:
-      - '*'
+      - 'main'
   tags:
     include:
       - '*'
@@ -48,6 +48,7 @@ variables:
 # NOTE: Sub-project pipelines are still running with the root working directory
 jobs:
   - job: dockerBuildAndDockerPush
+    condition: eq(False, startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     displayName: 'Build Docker image for dapla pyspark operator'
     steps:
       - template: docker/docker-build-image-and-push-to-gcr.yml@templates
