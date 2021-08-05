@@ -40,6 +40,8 @@ variables:
     value: $(Pipeline.Workspace)/.m2/repository
   - name: MAVEN_OPTS
     value: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+  - name: imageTagAfterVulnerabilityScan
+    default: '$(Build.SourceBranchName)-$(Build.SourceVersion)'
 
 
 
@@ -55,6 +57,15 @@ jobs:
           imageName: $(imageName)
           repoName: $(repoName)
           Dockerfile: 'docker/jupyterhub/Dockerfile'
+          imageTagAfterVulnerabilityScan: $(imageTagAfterVulnerabilityScan)
+
+      - script: |
+          cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
+          docker pull ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }}
+          docker tag ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }} ${{ variables.imageName }}:latest
+          docker push ${{ variables.imageName }}:latest
+        displayName: "Retagging latest image"
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
 
   # Job which pulls the Docker image with the correct tag (image-scan-tag) from GCR, tags this
