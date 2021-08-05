@@ -60,8 +60,8 @@ variables:
     value: false
 
 jobs:
-  - job: pullSparkPlugin
-    displayName: 'Pull spark plugin from Maven'
+  - job: pullJavaDependencies
+    displayName: 'Pull java dependencies from Maven'
     container: 'maven:3-jdk-11'
     # Job condition: Run these jobs on any branch, but not on tags
     condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
@@ -85,7 +85,7 @@ jobs:
       # Publish pipeline artifact
       - publish: build/target
         displayName: 'Publish artifact to pipeline'
-        artifact: spark-plugin-libs
+        artifact: spark-java-libs
 
 
   # Job which builds Docker image, pushes this to GCR and checks for any image vulnerabilities
@@ -94,17 +94,17 @@ jobs:
     timeoutInMinutes: 150 # how long to run the job before automatically cancelling
     condition: eq(False, startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     displayName: 'Build Docker image for jupyterlab'
-    dependsOn: pullSparkPlugin
+    dependsOn: pullJavaDependencies
     steps:
       # Download pipleline artifact
       - download: current
         displayName: 'Download pipeline artifact'
         patterns: '*.jar'
-        artifact: spark-plugin-libs
+        artifact: spark-java-libs
 
       # Copy pipeline artifact into working directory
       - bash: |
-          cp $(Pipeline.Workspace)/spark-plugin-libs/*.jar ./docker/jupyterlab
+          cp $(Pipeline.Workspace)/spark-java-libs/*.jar ./docker/jupyterlab
         displayName: 'Copy pipeline artifact into working directory'
 
       # Authenticate Docker to GCR using predefined service connection
