@@ -41,7 +41,7 @@ variables:
   - name: MAVEN_OPTS
     value: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   - name: imageTagAfterVulnerabilityScan
-    default: '$(Build.SourceBranchName)-$(Build.SourceVersion)'
+    value: '$(Build.SourceBranchName)-$(Build.SourceVersion)'
 
 
 
