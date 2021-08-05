@@ -40,6 +40,8 @@ variables:
     value: $(Pipeline.Workspace)/.m2/repository
   - name: MAVEN_OPTS
     value: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+  - name: imageTagAfterVulnerabilityScan
+    value: '$(Build.SourceBranchName)-$(Build.SourceVersion)'
 
 
 # Job which builds Docker image, pushes this to GCR and checks for any image vulnerabilities
@@ -55,13 +57,20 @@ jobs:
           repoName: $(repoName)
           Dockerfile: 'docker/spark-r/Dockerfile'
 
+      # Need to tag 'latest' image (used by docker-tag-for-production)
+      - script: |
+          cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
+          docker pull ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }}
+          docker tag ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }} ${{ variables.imageName }}:latest
+          docker push ${{ variables.imageName }}:latest
+        displayName: "Retagging latest image"
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
-  # Job which pulls the Docker image with the correct tag (image-scan-tag) from GCR, tags this
+  # Job which pulls the Docker image with the 'latest' tag from GCR, tags this
   # with the git tag, and pushes that back to GCR.
   # The job triggers when any tag was committed to GitHub, which means all tags in
   # the code repo are propagated to the corresponding (newly built) image in GCR.
   - template: docker/docker-tag-for-production.yml@templates
     parameters:
-      tagToTag: 'master-$(fullSha)'
+      tagToTag: 'latest'
       gcrImageName: ${{ variables.imageName }}
-
