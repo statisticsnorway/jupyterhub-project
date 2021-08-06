@@ -31,10 +31,10 @@ sql = spark.sql
 atexit.register(lambda: sc.stop())
 
 # This registers the custom pyspark extensions
-load_extensions()
+# load_extensions()
 
 # Fix the Spark UI link
 SparkContext.uiWebUrl = property(uiWebUrl)
 
 # Load dapla magics
-load_all(get_ipython())
+# load_all(get_ipython())
