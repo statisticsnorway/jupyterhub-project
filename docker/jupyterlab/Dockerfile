@@ -170,6 +170,8 @@ COPY check-git-config.bash /usr/local/bin/check-git-config.sh
 COPY gcs-connector-shaded.jar /jupyter/lib/gcs-connector-hadoop.jar
 # Copy the access token provider for the GCS connector
 COPY access-token-provider-shaded.jar /jupyter/lib/access-token-provider.jar
+# Copy the Apache Spark SQL connector for Google BigQuery
+COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-dependencies_2.12.jar
 
 # Install dapla cli:
 # - Install bash-completion
