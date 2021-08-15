@@ -132,8 +132,11 @@ RUN fix-permissions /usr/local/spark/conf
 USER $NB_UID
 
 # Experimental libraries
-RUN echo "**** install nbdev ****" && \
-    python3 -m pip install nbdev
+# nbdev uses nbconvert 5.6.1
+# voila 0.2.7 requires nbconvert<7,>=6.0.0, but you have nbconvert 5.6.1 which is incompatible.
+# https://github.com/fastai/nbdev/issues/305
+#RUN echo "**** install nbdev ****" && \
+# python3 -m pip install nbdev
 
 # pipenv is used for keeping track of and loading the specific package dependencies of each repository
 # Together with with envkernel Jupyter users can create Jupyter kernels with a different environment.
@@ -145,6 +148,8 @@ RUN echo "**** install ssb_spark_tools ****" && \
     python3 -m pip install ssb_spark_tools==0.1.1 pytest pytest_tornasync pyjstat xmltodict lxml holidays && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
+    echo "**** install collapsible headers (for Jupyterlab >= 3.0) ****" && \
+    python3 -m pip install aquirdturtle_collapsible_headings && \
     echo "**** install ipython extensions" && \
     python3 -m pip install ssb-ipython-kernels==0.2.25 gcsfs==0.6.2 pyarrow koalas
 
