@@ -155,6 +155,8 @@ RUN echo "**** install pipenv envkernel ****" && \
 # Customer defined libraries
 RUN echo "**** install ssb_spark_tools ****" && \
     python3 -m pip install ssb_spark_tools==0.1.1 pytest pytest_tornasync pyjstat xmltodict lxml holidays && \
+    echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
+    python3 -m pip install pandas-gbq && \
     echo "**** install ipython extensions" && \
     python3 -m pip install ssb-ipython-kernels==0.2.25 gcsfs==0.6.2 pyarrow koalas
 
