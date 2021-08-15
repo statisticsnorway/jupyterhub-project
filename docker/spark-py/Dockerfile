@@ -34,24 +34,24 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Install latest Spark version
-RUN wget https://apache.uib.no/spark/spark-3.0.3/spark-3.0.3-bin-hadoop2.7.tgz && \
-    tar -zxpf spark-3.0.3-bin-hadoop2.7.tgz -C /tmp && \
-    mv /tmp/spark-3.0.3-bin-hadoop2.7 ${SPARK_HOME} && \
-    rm -rf /tmp/spark-3.0.3-bin-hadoop2.7 && \
-    rm spark-3.0.3-bin-hadoop2.7.tgz
+RUN wget https://apache.uib.no/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz && \
+    tar -zxpf spark-3.1.2-bin-hadoop2.7.tgz -C /tmp && \
+    mv /tmp/spark-3.1.2-bin-hadoop2.7 ${SPARK_HOME} && \
+    rm -rf /tmp/spark-3.1.2-bin-hadoop2.7 && \
+    rm spark-3.1.2-bin-hadoop2.7.tgz
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
 # Python 3.8 is not available in the standard Debian 10 repositories, so
 # it must be built from source
-RUN wget -O Python-3.8.5.tar.xz https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tar.xz && \
-    tar -xf Python-3.8.5.tar.xz && \
-    rm Python-3.8.5.tar.xz
+RUN wget -O Python-3.9.6.tar.xz https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tar.xz && \
+    tar -xf Python-3.9.6.tar.xz && \
+    rm Python-3.9.6.tar.xz
 
-RUN cd Python-3.8.5 && \
+RUN cd Python-3.9.6 && \
     ./configure --enable-optimizations && \
     make -j 4 && \
     make install && \
-    rm -rf Python-3.8.5
+    rm -rf Python-3.9.6
 
 COPY entrypoint.sh /opt/
 COPY decom.sh /opt/

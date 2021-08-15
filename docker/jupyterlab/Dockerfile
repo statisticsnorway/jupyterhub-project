@@ -21,7 +21,7 @@ RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.m
 
 # Image contains Spark 3.0
 # jupyter/all-spark-notebook includes Python, R, and Scala support for Apache Spark.
-FROM jupyter/all-spark-notebook:95ccda3619d0 AS ssb-notebook-image
+FROM jupyter/all-spark-notebook:spark-3.1.2 AS ssb-notebook-image
 
 # Install SSH client
 USER root
@@ -68,56 +68,44 @@ RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install papermill && \
     echo "**** install ipywidgets ****" && \
     python3 -m pip install ipywidgets && \
-    jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
-    jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
     echo "**** install jupyter_server_proxy ****" && \
     python3 -m pip install jupyter-server-proxy && \
-    jupyter serverextension enable --sys-prefix jupyter_server_proxy && \
     echo "**** install holoviz panel ****" && \
-    python3 -m pip install panel && \
-    jupyter labextension install --no-build @pyviz/jupyterlab_pyviz && \
+    python3 -m pip install --upgrade pyviz_comms && \
     echo "**** install Voilà ****" && \
     python3 -m pip install voila && \
-    jupyter labextension install --no-build @jupyter-voila/jupyterlab-preview && \
-    jupyter serverextension enable --sys-prefix voila && \
     echo "**** install Plotly ****" && \
     # JupyterLab renderer support
-    jupyter labextension install --no-build jupyterlab-plotly && \
-    # OPTIONAL: Jupyter widgets extension
-    jupyter labextension install --no-build plotlywidget && \
+    python3 -m pip install plotly && \
     echo "**** install geopandas ****" && \
     python3 -m pip install geopandas && \
     echo "**** install ipyleaflet ****" && \
     python3 -m pip install ipyleaflet && \
-    jupyter labextension install --no-build jupyter-leaflet && \
     echo "**** install descartes ****" && \
     python3 -m pip install descartes && \
     echo "**** install dash ****" && \
     python3 -m pip install jupyter-dash && \
-    jupyter labextension install --no-build jupyterlab-dash && \
-    echo "**** install streamlit ****" && \
-    python3 -m pip install streamlit && \
+    #echo "**** install streamlit ****" && \
+    #showstopper: https://github.com/streamlit/streamlit/issues/2703
+    #python3 -m pip install streamlit && \
     echo "**** install jupyter-lsp ****" && \
-    # Use jupyterlab-lsp instead of jupyter-lsp for Jupyterlab > 3.0
-    # python3 -m pip install jupyterlab-lsp==3.1.0 && \
-    python3 -m pip install jupyter-lsp && \
+    python3 -m pip install jupyterlab-lsp && \
     python3 -m pip install python-language-server[all] && \
     echo "**** install ipysheet ****" && \
     python3 -m pip install ipysheet && \
-    jupyter labextension install --no-build ipysheet && \
     echo "**** install ipyaggrid ****" && \
     python3 -m pip install ipyaggrid && \
-    jupyter labextension install --no-build ipyaggrid && \
-    echo "**** install qgrid ****" && \
-    python3 -m pip install qgrid && \
-    jupyter nbextension enable --py --sys-prefix qgrid && \
-    jupyter labextension install --no-build qgrid2 && \
+    #echo "**** install qgrid ****" && \
+    #showstopper: https://github.com/quantopian/qgrid/issues/350
+    #python3 -m pip install qgrid2 && \
     echo "**** install fuzzywuzzy[speedup] ****" && \
     python3 -m pip install fuzzywuzzy[speedup] && \
+    echo "**** install jupyterlab-system-monitor ****" && \
+    python3 -m pip install jupyterlab-system-monitor && \
     python3 -m pip cache purge && \
     jupyter lab build
 
-RUN python3 -m pip install --upgrade jupyterhub==1.3.0 && \
+RUN python3 -m pip install --upgrade jupyterhub && \
     jupyterhub upgrade-db
 
 FROM ssb-notebook-image
