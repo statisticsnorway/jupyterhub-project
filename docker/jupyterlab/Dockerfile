@@ -9,7 +9,7 @@ RUN apt-get update -y \
 	    libcurl4-openssl-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV BASE_PACKAGES lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm
+ENV BASE_PACKAGES lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm stringi
 ENV EXT_PACKAGES tables tidyverse docopt data.table sdcTable SmallCountRounding remotes configr
 ENV SSB_PACKAGES SSBtools easySdcTable RegSDC PxWebApiData klassR
 
