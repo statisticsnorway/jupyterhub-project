@@ -9,7 +9,7 @@ RUN apt-get update -y \
 	    libcurl4-openssl-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV BASE_PACKAGES lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm stringi
+ENV BASE_PACKAGES lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm
 ENV EXT_PACKAGES tables tidyverse docopt data.table sdcTable SmallCountRounding remotes configr
 ENV SSB_PACKAGES SSBtools easySdcTable RegSDC PxWebApiData klassR
 
@@ -54,6 +54,7 @@ RUN conda create -y -n r-reticulate python=3.8.6 numpy
 # Depends on r-rjava
 RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)"
+RUN R -e "install.packages('SSBtools', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('statisticsnorway/Kostra')"
 RUN rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
