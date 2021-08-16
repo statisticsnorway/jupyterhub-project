@@ -30,7 +30,7 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Install latest Spark version
-RUN wget https://apache.uib.no/spark/spark-3.0.3/spark-3.0.3-bin-hadoop2.7.tgz && \
+RUN wget https://apache.uib.no/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz && \
     tar -zxpf spark-3.1.2-bin-hadoop2.7.tgz -C /tmp && \
     mv /tmp/spark-3.1.2-bin-hadoop2.7 ${SPARK_HOME} && \
     rm -rf /tmp/spark-3.1.2-bin-hadoop2.7 && \
