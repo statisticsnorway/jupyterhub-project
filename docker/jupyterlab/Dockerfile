@@ -21,7 +21,7 @@ RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.m
 
 # Image contains Spark 3.0
 # jupyter/all-spark-notebook includes Python, R, and Scala support for Apache Spark.
-FROM jupyter/all-spark-notebook:95ccda3619d0 AS ssb-notebook-image
+FROM jupyter/all-spark-notebook:spark-3.1.2 AS ssb-notebook-image
 
 # Install SSH client
 USER root
@@ -54,6 +54,7 @@ RUN conda create -y -n r-reticulate python=3.8.6 numpy
 # Depends on r-rjava
 RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)"
+RUN R -e "install.packages('SSBtools', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('statisticsnorway/Kostra')"
 RUN rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
@@ -68,56 +69,44 @@ RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install papermill && \
     echo "**** install ipywidgets ****" && \
     python3 -m pip install ipywidgets && \
-    jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
-    jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager && \
     echo "**** install jupyter_server_proxy ****" && \
     python3 -m pip install jupyter-server-proxy && \
-    jupyter serverextension enable --sys-prefix jupyter_server_proxy && \
     echo "**** install holoviz panel ****" && \
-    python3 -m pip install panel && \
-    jupyter labextension install --no-build @pyviz/jupyterlab_pyviz && \
+    python3 -m pip install --upgrade pyviz_comms && \
     echo "**** install Voilà ****" && \
     python3 -m pip install voila && \
-    jupyter labextension install --no-build @jupyter-voila/jupyterlab-preview && \
-    jupyter serverextension enable --sys-prefix voila && \
     echo "**** install Plotly ****" && \
     # JupyterLab renderer support
-    jupyter labextension install --no-build jupyterlab-plotly && \
-    # OPTIONAL: Jupyter widgets extension
-    jupyter labextension install --no-build plotlywidget && \
+    python3 -m pip install plotly && \
     echo "**** install geopandas ****" && \
     python3 -m pip install geopandas && \
     echo "**** install ipyleaflet ****" && \
     python3 -m pip install ipyleaflet && \
-    jupyter labextension install --no-build jupyter-leaflet && \
     echo "**** install descartes ****" && \
     python3 -m pip install descartes && \
     echo "**** install dash ****" && \
     python3 -m pip install jupyter-dash && \
-    jupyter labextension install --no-build jupyterlab-dash && \
-    echo "**** install streamlit ****" && \
-    python3 -m pip install streamlit && \
+    #echo "**** install streamlit ****" && \
+    #showstopper: https://github.com/streamlit/streamlit/issues/2703
+    #python3 -m pip install streamlit && \
     echo "**** install jupyter-lsp ****" && \
-    # Use jupyterlab-lsp instead of jupyter-lsp for Jupyterlab > 3.0
-    # python3 -m pip install jupyterlab-lsp==3.1.0 && \
-    python3 -m pip install jupyter-lsp && \
+    python3 -m pip install jupyterlab-lsp && \
     python3 -m pip install python-language-server[all] && \
     echo "**** install ipysheet ****" && \
     python3 -m pip install ipysheet && \
-    jupyter labextension install --no-build ipysheet && \
     echo "**** install ipyaggrid ****" && \
     python3 -m pip install ipyaggrid && \
-    jupyter labextension install --no-build ipyaggrid && \
-    echo "**** install qgrid ****" && \
-    python3 -m pip install qgrid && \
-    jupyter nbextension enable --py --sys-prefix qgrid && \
-    jupyter labextension install --no-build qgrid2 && \
+    #echo "**** install qgrid ****" && \
+    #showstopper: https://github.com/quantopian/qgrid/issues/350
+    #python3 -m pip install qgrid2 && \
     echo "**** install fuzzywuzzy[speedup] ****" && \
     python3 -m pip install fuzzywuzzy[speedup] && \
+    echo "**** install jupyterlab-system-monitor ****" && \
+    python3 -m pip install jupyterlab-system-monitor && \
     python3 -m pip cache purge && \
     jupyter lab build
 
-RUN python3 -m pip install --upgrade jupyterhub==1.3.0 && \
+RUN python3 -m pip install --upgrade jupyterhub && \
     jupyterhub upgrade-db
 
 FROM ssb-notebook-image
@@ -144,8 +133,11 @@ RUN fix-permissions /usr/local/spark/conf
 USER $NB_UID
 
 # Experimental libraries
-RUN echo "**** install nbdev ****" && \
-    python3 -m pip install nbdev
+# nbdev uses nbconvert 5.6.1
+# voila 0.2.7 requires nbconvert<7,>=6.0.0, but you have nbconvert 5.6.1 which is incompatible.
+# https://github.com/fastai/nbdev/issues/305
+#RUN echo "**** install nbdev ****" && \
+# python3 -m pip install nbdev
 
 # pipenv is used for keeping track of and loading the specific package dependencies of each repository
 # Together with with envkernel Jupyter users can create Jupyter kernels with a different environment.
@@ -157,6 +149,8 @@ RUN echo "**** install ssb_spark_tools ****" && \
     python3 -m pip install ssb_spark_tools==0.1.1 pytest pytest_tornasync pyjstat xmltodict lxml holidays && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
+    echo "**** install collapsible headers (for Jupyterlab >= 3.0) ****" && \
+    python3 -m pip install aquirdturtle_collapsible_headings && \
     echo "**** install ipython extensions" && \
     python3 -m pip install ssb-ipython-kernels==0.2.25 gcsfs==0.6.2 pyarrow koalas
 
