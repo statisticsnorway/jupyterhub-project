@@ -9,7 +9,7 @@ RUN apt update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade
 
-RUN pip install tokenexchangeauthenticator==0.0.9
+RUN pip install tokenexchangeauthenticator==0.1.0
 
 USER jovyan
 
