@@ -1,16 +1,27 @@
 #!/usr/bin/env bash
 
+PIPENV_KERNEL='/opt/dapla/pipenv_kernel.sh'
+export PIPENV_KERNEL
+
 # *** CREATE ***
 if [ "$1" == "create" ]; then
-  if [ $# -ne 3 ]
+  if [ $# -le 2 ]
     then
       echo "This command creates a jupyterlab kernel with a given name, and initializes a 'pipenv' virtual environment that will track (un)installs for this project."
       echo "Exactly 2 arguments must be supplied to 'pipenv-kernel create'. The first argument is the name of the new kernel. The second argument must be the path to the existing kernel that you wish to base the new kernel on, ending with the folder named after the kernel."
+      echo "If you want the virtual environment itself to be saved in the project folder under the '.venv' folder, use the '--in-project' option. This will take up some of the limited persistent storage space, but will save you the time taken to download and install your virtual environment every time you get a new JupyterLab instance."
       echo "Current folder path: "
       pwd
       jupyter kernelspec list
       exit 1
   fi
+
+  for var in "$@"
+  do
+    if [ "$var" = "--in-project" ]; then
+      export PIPENV_VENV_IN_PROJECT=1
+    fi
+  done
 
   echo "Starting kernel creation with these parameters:"
   export NEW_KERNEL_NAME=$2
@@ -20,19 +31,36 @@ if [ "$1" == "create" ]; then
     TEMPLATE_KERNEL_PATH=$(cat "$NTKP")
     export TEMPLATE_KERNEL_PATH
   else
-    TEMPLATE_KERNEL_PATH=$3/kernel.json
-    export TEMPLATE_KERNEL_PATH
-    echo "$TEMPLATE_KERNEL_PATH" > "$NTKP"
+    if [ -d "$3" ]; then
+      TEMPLATE_KERNEL_PATH=$3/kernel.json
+      export TEMPLATE_KERNEL_PATH
+      if test -f "$TEMPLATE_KERNEL_PATH"; then
+        echo "$TEMPLATE_KERNEL_PATH" > "$NTKP"
+      else
+        echo "ERROR: The template kernel.json does not exist at '$TEMPLATE_KERNEL_PATH'. Provide a folder containing a kernel.json"
+        jupyter kernelspec list
+        exit 1
+      fi
+    else
+      echo "ERROR: The second parameter of pipenv-kernel create (value given was '$3') needs to be the path of a directory containing a kernel.json"
+      jupyter kernelspec list
+      exit 1
+    fi
   fi
   echo "- Template kernel path: $TEMPLATE_KERNEL_PATH"
   NEW_KERNEL_PATH=/home/jovyan/.local/share/jupyter/kernels/$NEW_KERNEL_NAME/kernel.json
   export NEW_KERNEL_PATH
   echo "- New kernel target path: $NEW_KERNEL_PATH"
 
-  echo "Installing prerequisites..."
-  pip install pipenv
-  echo "Creating/Activating pipenv virtual environment for current directory/project, and installing ipykernel..."
+  if ! command -v pipenv &> /dev/null
+  then
+      echo "The command 'pipenv' could not be resolved. Installing 'pipenv' using 'pip install' . . ."
+      pip install pipenv
+  fi
+
+  echo "Creating/Activating pipenv virtual environment for current directory/project"
   pipenv install
+  echo "Installing ipykernel, which is needed to create new kernels"
   pipenv run pip install ipykernel
   echo "In the newly created pipenv associated with the current directory, create new kernel with name '$NEW_KERNEL_NAME'..."
   pipenv run python -m ipykernel install --user --name="$NEW_KERNEL_NAME"
@@ -53,23 +81,45 @@ if [ "$1" == "create" ]; then
 
 # *** ACTIVATE ***
 elif [ "$1" == "activate" ]; then
-  if [ $# -ne 2 ]; then
+  if [ $# -eq 1 ]; then
     echo "When activating a pipenv-kernel, you must provide the name of the kernel as an argument: 'pipenv-kernel activate <kernel-name>'. Use 'jupyter kernelspec list' to get a list of all registered kernels. "
     exit 1
   fi
 
-  pip install pipenv
+  export KERNEL_NAME=$2
+  echo "Kernel Name given as argument: '$KERNEL_NAME'"
 
-  if test -f "Pipenv" $$ test -f "Pipenv.lock"; then
-    echo "Pipenv and Pipenv.lock files are present in the current directory. Installing..."
+  export PIPENV_VENV_IN_PROJECT=0 # By default pipenv venv is stored in the container layer, and dies with the container
+  for var in "$@"
+  do
+    if [ "$var" = "--in-project" ]; then # Give permanence to the venv, so it doesnt have to be reinitialized every time
+      export PIPENV_VENV_IN_PROJECT=1
+      echo "Activating pipenv in project"
+    fi
+  done
+
+  if [ $PIPENV_VENV_IN_PROJECT -ne 1 ] && [ -d .venv ]; then # If there is a virtual environment saved in project, use it
+    export PIPENV_VENV_IN_PROJECT=1
+    echo ".venv folder found in project. Activating pipenv '--in project'"
+  fi
+
+  if ! command -v pipenv &> /dev/null
+  then
+      echo "The command 'pipenv' could not be resolved. Installing 'pipenv' using 'pip install' . . ."
+      pip install pipenv
+  fi
+
+  if test -f "Pipfile" && test -f "Pipfile.lock"; then
+    echo "Pipfile and Pipfile.lock files are present in the current directory. Installing..."
     pipenv install
   else
-    echo "Something is wrong: Pipenv and Pipenv.lock are not both present in this folder. Run 'pipenv install' to initialize them both, or run 'pipenv-kernel create <kernel-name> <template-path>' to generate a new pipenv AND new kernel for this folder."
+    echo "Something is wrong: Pipfile and Pipfile.lock are not both present in this folder. Run 'pipenv install' to initialize them both, or run 'pipenv-kernel create <kernel-name> <template-path>' to generate a new pipenv AND new kernel for this folder."
     exit 1
   fi
 
-  export KERNEL_NAME=$2
-  KERNEL_PATH="/home/jovyan/.local/share/jupyter/kernels/$KERNEL_NAME/kernel.json"
+  KERNEL_PARENT_FOLDER="/home/jovyan/.local/share/jupyter/kernels/$KERNEL_NAME"
+  export KERNEL_PARENT_FOLDER
+  KERNEL_PATH="$KERNEL_PARENT_FOLDER/kernel.json"
   export KERNEL_PATH
   if test -f "$KERNEL_PATH"; then
     echo "kernel.json already present at: '$KERNEL_PATH'. No activation required."
@@ -83,7 +133,11 @@ elif [ "$1" == "activate" ]; then
 
   if test -f "$LOCAL_KERNEL_COPY_FILENAME"; then
     echo "Found a '$LOCAL_KERNEL_COPY_FILENAME' in this folder."
+    echo "Installing ipykernel if it is missing, so we can re-install the missing kernel"
+    pipenv run pip install ipykernel
+    echo "installing the missing kernel '$KERNEL_NAME'"
     pipenv run python -m ipykernel install --user --name="$KERNEL_NAME"
+    [ ! -d "$KERNEL_PARENT_FOLDER" ] && echo "$KERNEL_PARENT_FOLDER does not exist! Creating" && mkdir "$KERNEL_PARENT_FOLDER"
     echo "Copying contents of '$LOCAL_KERNEL_COPY_FILENAME' into '$KERNEL_PATH'"
     cp "$LOCAL_KERNEL_COPY_FILENAME" "$KERNEL_PATH"
     exit 0
@@ -136,7 +190,7 @@ elif [ "$1" == "delete-all" ]; then
     echo "Removing pipfile and lockfile from this folder."
     rm Pipfile
     rm Pipfile.lock
-    pipenv-kernel delete-kernel "$KERNEL_NAME"
+    "$PIPENV_KERNEL" delete-kernel "$KERNEL_NAME"
     exit 0
   else
     exit 1
@@ -147,6 +201,7 @@ elif [ "$1" == "delete-kernel" ]; then
   if [ $# -ne 2 ]; then
     echo "This command deletes a kernel (only kernel, not the pipenv) created using the 'pipenv-kernel' command."
     echo "Kernel name must be given as an argument: 'pipenv-kernel delete-kernel <kernel-name>'"
+    jupyter kernelspec list
     exit 1
   fi
 
