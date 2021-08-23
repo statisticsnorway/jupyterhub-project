@@ -7,6 +7,7 @@ import platform
 import warnings
 from pyspark.context import SparkContext
 from pyspark.sql import SparkSession
+from dapla.spark.sparkui import uiWebUrl
 
 # Get the local ip.
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -41,6 +42,8 @@ atexit.register(lambda: sc.stop())
 sqlContext = spark._wrapped
 sqlCtx = sqlContext
 
+# Fix the Spark UI link
+SparkContext.uiWebUrl = property(uiWebUrl)
 print(r"""Welcome to
       ____              __
      / __/__  ___ _____/ /__
