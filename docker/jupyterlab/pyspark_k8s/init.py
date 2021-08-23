@@ -3,12 +3,10 @@ import os
 import socket
 import string
 import random
+import platform
+import warnings
 from pyspark.context import SparkContext
 from pyspark.sql import SparkSession
-from dapla.spark.sparkextension import load_extensions
-from dapla.spark.sparkui import uiWebUrl
-from dapla.magics import load_all
-from IPython import get_ipython
 
 # Get the local ip.
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -19,22 +17,49 @@ s.close()
 randomId = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
 appName = os.environ["JUPYTERHUB_CLIENT_ID"] + '-' + randomId
 
-spark = SparkSession.builder.appName(appName) \
-    .config('spark.submit.deployMode', 'client') \
-    .config('spark.driver.host', local_ip) \
-    .config('spark.kubernetes.driver.pod.name', os.environ["HOSTNAME"]) \
-    .getOrCreate()
-
 # This is similar to /pyspark/shell.py
+SparkContext._ensure_initialized()  # type: ignore
+
+try:
+    spark = SparkSession.builder.appName(appName) \
+        .config('spark.submit.deployMode', 'client') \
+        .config('spark.driver.host', local_ip) \
+        .config('spark.kubernetes.driver.pod.name', os.environ["HOSTNAME"]) \
+        .getOrCreate()
+except Exception:
+    import sys
+    import traceback
+    warnings.warn("Failed to initialize Spark session.")
+    traceback.print_exc(file=sys.stderr)
+    sys.exit(1)
+
 sc = spark.sparkContext
 sql = spark.sql
 atexit.register(lambda: sc.stop())
 
-# This registers the custom pyspark extensions
-# load_extensions()
+# for compatibility
+sqlContext = spark._wrapped
+sqlCtx = sqlContext
 
-# Fix the Spark UI link
-SparkContext.uiWebUrl = property(uiWebUrl)
+print(r"""Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version %s
+      /_/
+""" % sc.version)
+print("Using Python version %s (%s, %s)" % (
+    platform.python_version(),
+    platform.python_build()[0],
+    platform.python_build()[1]))
+print("Spark context Web UI available at %s" % (sc.uiWebUrl))
+print("Spark context available as 'sc' (master = %s, app id = %s)." % (sc.master, sc.applicationId))
+print("SparkSession available as 'spark'.")
 
-# Load dapla magics
-# load_all(get_ipython())
+# The ./bin/pyspark script stores the old PYTHONSTARTUP value in OLD_PYTHONSTARTUP,
+# which allows us to execute the user's PYTHONSTARTUP file:
+_pythonstartup = os.environ.get('OLD_PYTHONSTARTUP')
+if _pythonstartup and os.path.isfile(_pythonstartup):
+    with open(_pythonstartup) as f:
+        code = compile(f.read(), _pythonstartup, 'exec')
+        exec(code)
