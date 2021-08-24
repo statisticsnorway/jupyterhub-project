@@ -2,7 +2,7 @@
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
 
 # Use the most up-to-date and security patched base image
-FROM adoptopenjdk:11-jdk-hotspot
+FROM openjdk:11-jre-slim
 WORKDIR /
 
 # Reset to root to run installation tasks
