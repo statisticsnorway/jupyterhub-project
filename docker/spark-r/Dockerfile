@@ -1,8 +1,8 @@
 # This Dockerfile is inspired by
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
 
-# Use the most up-to-date and security patched base image
-FROM openjdk:11-jre-slim
+# Use base image that has the same JRE as jupyter/all-spark-notebook
+FROM adoptopenjdk/openjdk11:jre-11.0.9.1_1-ubuntu
 WORKDIR /
 
 # Reset to root to run installation tasks

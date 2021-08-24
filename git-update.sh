@@ -41,7 +41,7 @@ function handle_response {
     fi
 }
 
-update "." "dapla-migration-project"
+update "." "jupyterhub-project"
 while read -r repo
 do
     if [ -d ${repo} ];
