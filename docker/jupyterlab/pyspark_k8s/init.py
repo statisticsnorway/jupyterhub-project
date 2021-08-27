@@ -26,7 +26,6 @@ try:
         .config('spark.submit.deployMode', 'client') \
         .config('spark.driver.host', local_ip) \
         .config('spark.executorEnv.JUPYTERHUB_API_TOKEN', os.environ["JUPYTERHUB_API_TOKEN"]) \
-        .config('spark.kubernetes.driverEnv.JUPYTERHUB_API_TOKEN', os.environ["JUPYTERHUB_API_TOKEN"]) \
         .config('spark.kubernetes.driver.pod.name', os.environ["HOSTNAME"]) \
         .getOrCreate()
 except Exception:
