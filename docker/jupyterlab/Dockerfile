@@ -45,14 +45,14 @@ USER $NB_UID
 
 # Install R libraries from conda (the rest is copied from the ssb-r-packages container)
 RUN conda update -n base conda && \
-    conda install --quiet --yes r-reticulate r-rjava r-arrow r-devtools r-languageserver r-rgdal && \
+    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal && \
     conda clean --all -f -y
 
 # Create a conda env (r-reticulate) that enables R to execute Python code
 RUN conda create -y -n r-reticulate python=3.9.7 numpy
 
-# Depends on r-rjava
-RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
+# Depends on r-rjava (not installed)
+#RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)"
 RUN R -e "install.packages('SSBtools', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('statisticsnorway/Kostra')"
