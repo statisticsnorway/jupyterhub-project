@@ -19,9 +19,9 @@ RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.m
 	&& rm -rf /var/lib/apt/lists/* \
 	&& rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
-# Image contains Spark 3.0
+# Image contains Spark 3.2.0
 # jupyter/all-spark-notebook includes Python, R, and Scala support for Apache Spark.
-FROM jupyter/all-spark-notebook:spark-3.1.2 AS ssb-notebook-image
+FROM jupyter/all-spark-notebook:spark-3.2.0 AS ssb-notebook-image
 
 # Install SSH client
 USER root
@@ -49,7 +49,7 @@ RUN conda update -n base conda && \
     conda clean --all -f -y
 
 # Create a conda env (r-reticulate) that enables R to execute Python code
-RUN conda create -y -n r-reticulate python=3.8.6 numpy
+RUN conda create -y -n r-reticulate python=3.9.7 numpy
 
 # Depends on r-rjava
 RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
