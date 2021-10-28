@@ -103,6 +103,8 @@ RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install fuzzywuzzy[speedup] && \
     echo "**** install jupyterlab-system-monitor ****" && \
     python3 -m pip install jupyterlab-system-monitor && \
+    echo "**** uninstall IPython Parallels (comes default with dockerhub image)  ****" && \
+    python3 -m pip uninstall -y ipyparallel && \
     python3 -m pip cache purge && \
     jupyter lab build
 
