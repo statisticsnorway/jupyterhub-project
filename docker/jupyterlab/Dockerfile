@@ -1,5 +1,5 @@
 # Image contains R and littler
-FROM rocker/r-base:4.0.3 AS ssb-r-packages
+FROM rocker/r-base:4.0.5 AS ssb-r-packages
 
 RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends \
@@ -45,14 +45,14 @@ USER $NB_UID
 
 # Install R libraries from conda (the rest is copied from the ssb-r-packages container)
 RUN conda update -n base conda && \
-    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal && \
+    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal r-rjava && \
     conda clean --all -f -y
 
 # Create a conda env (r-reticulate) that enables R to execute Python code
 RUN conda create -y -n r-reticulate python=3.9.7 numpy
 
 # Depends on r-rjava (not installed)
-#RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)"
 RUN R -e "install.packages('SSBtools', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('statisticsnorway/Kostra')"
