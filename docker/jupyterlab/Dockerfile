@@ -11,11 +11,13 @@ RUN apt-get update -y \
 	&& apt-get -y clean all \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV BASE_PACKAGES lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm
-ENV EXT_PACKAGES tables tidyverse docopt data.table sdcTable SmallCountRounding remotes configr
+ENV BASE_PACKAGES renv lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang \
+    htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm remotes validate dcmodify rpart \
+    simputation lumberjack plotly dash
+ENV EXT_PACKAGES tables tidyverse docopt data.table sdcTable SmallCountRounding configr e1071 RTextTools
 ENV SSB_PACKAGES SSBtools easySdcTable RegSDC PxWebApiData klassR
 
-RUN echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.method = "libcurl")' >> /etc/R/Rprofile.site \
+RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', dependencies = TRUE, Ncpus = $(nproc))" >> /etc/R/Rprofile.site \
     && echo 'source("/etc/R/Rprofile.site")' >> /etc/littler.r \
 	&& install.r ${BASE_PACKAGES} ${EXT_PACKAGES} ${SSB_PACKAGES} \
 	&& rm -rf /var/lib/apt/lists/* \
