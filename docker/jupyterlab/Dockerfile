@@ -7,6 +7,8 @@ RUN apt-get update -y \
 		libssl-dev \
 		libxml2-dev \
 	    libcurl4-openssl-dev \
+	&& apt autoremove -y \
+	&& apt-get -y clean all \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV BASE_PACKAGES lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm
@@ -32,11 +34,16 @@ RUN apt update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
     apt-get install --no-install-recommends -y openssh-client r-cran-rglpk glpk-utils libglpk-dev libpoppler-cpp-dev \
-    zlib1g-dev libgit2-dev libtesseract-dev libleptonica-dev libgdal-dev && \
+    zlib1g-dev libgit2-dev libtesseract-dev libleptonica-dev libgdal-dev libjpeg62 && \
+    apt autoremove -y && \
+    apt-get -y clean all && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy R libraries from ssb-r-packages container
 COPY --from=ssb-r-packages /usr/local/lib/R/site-library /opt/conda/lib/R/library
+
+# Copy R library dependencies from ssb-r-packages container
+COPY --from=ssb-r-packages /usr/lib/R/library /opt/conda/lib/R/library
 
 # Fix conda permission
 RUN chown -R $NB_UID:$NB_GID /opt/conda
@@ -45,7 +52,7 @@ USER $NB_UID
 
 # Install R libraries from conda (the rest is copied from the ssb-r-packages container)
 RUN conda update -n base conda && \
-    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal r-rjava && \
+    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal r-rjava r-units && \
     conda clean --all -f -y
 
 # Create a conda env (r-reticulate) that enables R to execute Python code
@@ -53,10 +60,9 @@ RUN conda create -y -n r-reticulate python=3.9.7 numpy
 
 # Depends on r-rjava (not installed)
 RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
-RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)"
-RUN R -e "install.packages('SSBtools', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
-RUN R -e "remotes::install_github('statisticsnorway/Kostra')"
-RUN rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
+    R -e "remotes::install_github('statisticsnorway/Kostra')" && \
+    rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install --upgrade jupyterlab-git && \
@@ -106,12 +112,15 @@ RUN echo "**** install jupyterlab-git ****" && \
     echo "**** uninstall IPython Parallels (comes default with dockerhub image)  ****" && \
     python3 -m pip uninstall -y ipyparallel && \
     python3 -m pip cache purge && \
-    jupyter lab build
-
-RUN python3 -m pip install --upgrade jupyterhub && \
-    jupyterhub upgrade-db
+    rm -rf /home/jovyan/.cache && \
+    conda clean --all -y && \
+    jupyter lab clean
 
 FROM ssb-notebook-image
+
+RUN jupyter lab build && \
+    python3 -m pip install --upgrade jupyterhub && \
+    jupyterhub upgrade-db
 
 # Copy the kernels. (pre-defined kernels are found at /opt/conda/share/jupyter/kernels)
 COPY pyspark_k8s /usr/local/share/jupyter/kernels/pyspark_k8s/
@@ -129,9 +138,9 @@ USER root
 # Add extra config to jupyter_notebook_config.py
 COPY jupyter_notebook_extra_config.py /tmp/
 RUN cat /tmp/jupyter_notebook_extra_config.py >> /etc/jupyter/jupyter_notebook_config.py && \
-    rm -f /tmp/jupyter_notebook_extra_config.py
+    rm -f /tmp/jupyter_notebook_extra_config.py && \
+    fix-permissions /usr/local/spark/conf
 
-RUN fix-permissions /usr/local/spark/conf
 USER $NB_UID
 
 # Experimental libraries
@@ -176,29 +185,35 @@ COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-
 # - Download latest release from github.
 # - Setup autocompletion
 # - Add aliases
+# - Install jq, which is needed for the former
 USER root
-RUN apt-get update -y && \
+RUN apt update && \
+    apt-get -y clean all && \
+    apt-get -y update && \
     apt-get -y upgrade && \
+    apt-get -y dist-upgrade && \
     apt-get install -y --no-install-recommends \
-        bash-completion && \
+        bash-completion jq && \
     rm -rf /var/lib/apt/lists/*
-RUN mkdir /opt/dapla/ && curl --silent -L -o- https://github.com/statisticsnorway/dapla-cli/releases/download/0.0.9/dapla-cli-0.0.9-linux-amd64.tar.gz \
+RUN mkdir /opt/dapla/ && curl --silent -L -o- https://github.com/statisticsnorway/dapla-cli/releases/download/0.1.0/dapla-cli-0.1.0-linux-amd64.tar.gz \
    | tar xvz -C /opt/dapla
 RUN chmod +x /opt/dapla/dapla-cli
 COPY dapla-cli.yml /opt/dapla/.dapla-cli.yml
-RUN /opt/dapla/dapla-cli completion bash > /etc/bash_completion.d/dapla
-RUN echo "alias dapla='/opt/dapla/dapla-cli --config /opt/dapla/.dapla-cli.yml'" >> /etc/bash.bashrc
-RUN echo "alias lsd='dapla ls'" >> /etc/bash.bashrc
-RUN echo "alias rmd='dapla rm'" >> /etc/bash.bashrc
+RUN /opt/dapla/dapla-cli completion bash > /etc/bash_completion.d/dapla && \
+    echo "alias dapla='/opt/dapla/dapla-cli --config /opt/dapla/.dapla-cli.yml'" >> /etc/bash.bashrc && \
+    echo "alias lsd='dapla ls'" >> /etc/bash.bashrc && \
+    echo "alias rmd='dapla rm'" >> /etc/bash.bashrc
 
 # Install pipenv-kernel and delete-pipenv-kernel:
 # - Copy in scripts
 # - Add aliases
-# - Install jq, which is needed for the former
 COPY pipenv_kernel.bash /opt/dapla/pipenv_kernel.sh
-RUN chmod +x /opt/dapla/pipenv_kernel.sh
-RUN echo "alias pipenv-kernel='/opt/dapla/pipenv_kernel.sh'" >> /etc/bash.bashrc
-RUN apt-get update -y && \
-    apt-get -y upgrade && \
-    apt-get install -y jq
+RUN chmod +x /opt/dapla/pipenv_kernel.sh && \
+    echo "alias pipenv-kernel='/opt/dapla/pipenv_kernel.sh'" >> /etc/bash.bashrc
+
+# Virtual environments should be stored in the container, so that they don't fill the 2G storage of the home dir.
+ENV WORKON_HOME="/virtualenvs"
+RUN mkdir "$WORKON_HOME" && \
+    chown -R $NB_UID "$WORKON_HOME"
+
 USER $NB_UID
