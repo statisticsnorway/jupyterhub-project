@@ -1,4 +1,4 @@
-FROM jupyterhub/k8s-hub:1.1.3
+FROM jupyterhub/k8s-hub:1.2.0
 
 USER root
 
@@ -9,7 +9,7 @@ RUN apt update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade
 
-RUN pip install tokenexchangeauthenticator==0.1.1
+RUN pip install tokenexchangeauthenticator==0.1.2
 
 USER jovyan
 
