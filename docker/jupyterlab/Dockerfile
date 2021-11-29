@@ -1,5 +1,5 @@
 # Image contains R and littler
-FROM rocker/r-base:4.0.5 AS ssb-r-packages
+FROM rocker/r-base:4.1.1 AS ssb-r-packages
 
 RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends \
