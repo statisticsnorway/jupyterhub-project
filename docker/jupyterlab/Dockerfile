@@ -159,7 +159,9 @@ RUN echo "**** install pipenv envkernel ****" && \
 
 # Customer defined libraries
 RUN echo "**** install ssb_spark_tools ****" && \
-    python3 -m pip install ssb_spark_tools==0.1.6 pytest pytest_tornasync pyjstat xmltodict lxml holidays && \
+    python3 -m pip install ssb_spark_tools==0.1.6 pytest pytest_tornasync pytest-cov pytest-mock pyjstat xmltodict lxml holidays PyGithub && \
+    echo "**** install sphinx ****" && \
+    python3 -m pip install sphinx sphinx-autodoc-defaultargs sphinx-autodoc-typehints sphinx-rtd-theme && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
     echo "**** install collapsible headers (for Jupyterlab >= 3.0) ****" && \
@@ -195,7 +197,7 @@ RUN apt update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
     apt-get install -y --no-install-recommends \
-        bash-completion jq && \
+        bash-completion jq iputils-ping traceroute && \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir /opt/dapla/ && curl --silent -L -o- https://github.com/statisticsnorway/dapla-cli/releases/download/0.1.0/dapla-cli-0.1.0-linux-amd64.tar.gz \
    | tar xvz -C /opt/dapla
