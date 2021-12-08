@@ -54,14 +54,15 @@ USER $NB_UID
 
 # Install R libraries from conda (the rest is copied from the ssb-r-packages container)
 RUN conda update -n base conda && \
-    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal r-rjava r-units && \
+    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal r-units && \
     conda clean --all -f -y
 
 # Create a conda env (r-reticulate) that enables R to execute Python code
 RUN conda create -y -n r-reticulate python=3.9.7 numpy
 
-# Depends on r-rjava (not installed)
-RUN R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
+# RJDemetra depends on r-rjava (but this messes up with the Java installation)
+RUN R CMD javareconf -e && \
+    R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
@@ -120,7 +121,7 @@ RUN echo "**** install jupyterlab-git ****" && \
 
 FROM ssb-notebook-image
 
-RUN jupyter lab build && \
+RUN jupyter lab build --dev-build=False && \
     python3 -m pip install --upgrade jupyterhub && \
     jupyterhub upgrade-db
 
