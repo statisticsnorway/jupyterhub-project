@@ -36,7 +36,7 @@ RUN apt update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
     apt-get install --no-install-recommends -y openssh-client r-cran-rglpk glpk-utils libglpk-dev libpoppler-cpp-dev \
-    zlib1g-dev libgit2-dev libtesseract-dev libleptonica-dev libgdal-dev libjpeg62 && \
+    zlib1g-dev libgit2-dev libtesseract-dev libleptonica-dev libgdal-dev libjpeg62 default-jdk && \
     apt autoremove -y && \
     apt-get -y clean all && \
     rm -rf /var/lib/apt/lists/*
