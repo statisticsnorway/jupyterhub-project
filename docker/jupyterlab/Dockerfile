@@ -54,7 +54,8 @@ USER $NB_UID
 
 # Install R libraries from conda (the rest is copied from the ssb-r-packages container)
 RUN conda update -n base conda && \
-    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal r-units && \
+    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal r-units \
+    r-ggraph r-tidygraph r-nabor && \
     conda clean --all -f -y
 
 # Create a conda env (r-reticulate) that enables R to execute Python code
