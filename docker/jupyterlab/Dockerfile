@@ -36,7 +36,7 @@ RUN apt update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
     apt-get install --no-install-recommends -y openssh-client r-cran-rglpk glpk-utils libglpk-dev libpoppler-cpp-dev \
-    zlib1g-dev libgit2-dev libtesseract-dev libleptonica-dev libgdal-dev libjpeg62 r-cran-rjava && \
+    zlib1g-dev libgit2-dev libtesseract-dev libleptonica-dev libgdal-dev libjpeg62 r-cran-rjava default-jdk && \
     apt autoremove -y && \
     apt-get -y clean all && \
     rm -rf /var/lib/apt/lists/*
@@ -63,7 +63,7 @@ RUN conda create -y -n r-reticulate python=3.9.7 numpy
 
 # RJDemetra depends on r-rjava 
 RUN R CMD javareconf -e && \
-    R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=FALSE, repos='http://cran.rstudio.com/')"
+    R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
