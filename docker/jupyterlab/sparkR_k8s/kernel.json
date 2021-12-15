@@ -2,7 +2,7 @@
   "display_name": "SparkR (k8s cluster)",
   "language": "R",
   "argv": [
-    "/opt/conda/bin/R",
+    "/usr/bin/R",
     "--slave",
     "-e",
     "IRkernel::main()",
