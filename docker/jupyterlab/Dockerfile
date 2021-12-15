@@ -39,6 +39,7 @@ RUN apt update && \
 
 # Setup R java support and install R packages that are not available as Ubuntu packages
 RUN R CMD javareconf -e && \
+    R -e "install.packages('RTextTools', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('configr', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('RegSDC', dependencies=FALSE, repos='http://cran.rstudio.com/')"
 

@@ -22,3 +22,11 @@ r-cran-nabor
 r-cran-rcpptoml
 r-cran-classint
 r-cran-s2
+r-cran-glmnet
+r-cran-sparsem
+r-cran-randomforest
+r-cran-tree
+r-cran-tm
+r-cran-ipred
+r-cran-catools
+r-cran-tau
