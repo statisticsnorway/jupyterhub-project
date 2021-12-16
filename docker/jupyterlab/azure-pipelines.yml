@@ -72,10 +72,12 @@ jobs:
         inputs:
           mavenPomFile: 'build/pom.xml'
           goals: 'clean package'
-          options: '-P ssb-bip'
+          options: '-DskipTests=true -Dmaven.javadoc.skip=true -U -P ssb-bip --batch-mode -Djdk.tls.client.protocols="TLSv1.2" $(MAVEN_OPTS)'
           mavenVersionOption: 'Default'
           mavenOptions: '-Xmx3072m'
-          mavenAuthenticateFeed: false
+          publishJUnitResults: false
+          testResultsFiles: '**/TEST-*.xml'
+          jdkArchitectureOption: 'x64'
 
       # Publish pipeline artifact
       - publish: build/target
