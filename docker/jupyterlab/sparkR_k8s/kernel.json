@@ -12,6 +12,6 @@
   "env": {
     "SPARK_HOME": "/usr/local/spark",
     "SPARKR_SUBMIT_ARGS": "${SPARKR_K8S_SUBMIT_ARGS}",
-    "R_PROFILE_USER" : "/opt/conda/share/jupyter/kernels/ir/Rstartup"
+    "R_PROFILE_USER" : "/opt/conda/share/jupyter/kernels/ir_k8s/Rstartup"
   }
 }
