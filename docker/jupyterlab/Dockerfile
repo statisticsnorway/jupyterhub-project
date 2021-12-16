@@ -111,6 +111,8 @@ RUN echo "**** install jupyterlab-git ****" && \
     #python3 -m pip install qgrid2 && \
     echo "**** install fuzzywuzzy[speedup] ****" && \
     python3 -m pip install fuzzywuzzy[speedup] && \
+    echo "**** install pillow==8.3.1 ****" && \
+    python3 -m pip install pillow==8.3.1 && \
     echo "**** install jupyterlab-system-monitor ****" && \
     python3 -m pip install jupyterlab-system-monitor && \
     echo "**** uninstall IPython Parallels (comes default with dockerhub image)  ****" && \
