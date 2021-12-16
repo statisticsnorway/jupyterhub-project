@@ -22,6 +22,8 @@ RUN apt-get update -y \
 	&& apt-get -y clean all \
 	&& rm -rf /var/lib/apt/lists/*
 
+ENV R_HOME /usr/lib/R
+
 COPY r-packages.txt /tmp/r-packages.txt
 
 RUN apt update && \

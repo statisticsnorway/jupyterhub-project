@@ -1,4 +1,7 @@
 r-base
+r-base-dev
+r-base-core
+r-recommended
 r-cran-irkernel
 r-cran-sparklyr
 r-cran-ggplot2
