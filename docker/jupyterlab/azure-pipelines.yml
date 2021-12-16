@@ -72,7 +72,7 @@ jobs:
         inputs:
           mavenPomFile: 'build/pom.xml'
           goals: 'clean package'
-          options: '-P ssb-bip --batch-mode $(MAVEN_OPTS)'
+          options: '-P ssb-bip'
           mavenVersionOption: 'Default'
           mavenOptions: '-Xmx3072m'
           mavenAuthenticateFeed: false
