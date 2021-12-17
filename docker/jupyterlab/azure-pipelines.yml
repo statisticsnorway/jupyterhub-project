@@ -96,7 +96,6 @@ jobs:
         displayName: 'Publish artifact to pipeline'
         artifact: spark-java-libs
 
-
   # Job which builds Docker image, pushes this to GCR and checks for any image vulnerabilities
   # NOTE: Sub-project pipelines are still running with the root working directory
   - job: dockerBuildAndDockerPush
