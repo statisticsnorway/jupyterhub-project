@@ -2,7 +2,7 @@
   "display_name": "SparkR (local)",
   "language": "R",
   "argv": [
-    "/opt/conda/bin/R",
+    "/usr/bin/R",
     "--slave",
     "-e",
     "IRkernel::main()",
