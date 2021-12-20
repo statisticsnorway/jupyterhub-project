@@ -224,15 +224,12 @@ ENV WORKON_HOME="/virtualenvs"
 RUN mkdir "$WORKON_HOME" && \
     chown -R $NB_UID "$WORKON_HOME"
 
-ENV TRIVY_VERSION 0.21.2
-# Vulnerability scanning of Python3.9 using "trivy"
-RUN sudo apt-get -y update && \
-    sudo apt-get -y install rpm && \
-    wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.deb && \
-    sudo dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb && \
-    trivy -v
+# Image vulnerability scan
+COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
+RUN trivy filesystem --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL /
 
-RUN trivy fs --security-checks vuln,config --light --ignore-unfixed --exit-code 0 --severity LOW,MEDIUM /opt/conda/lib/python3.9 && \
-    trivy fs --security-checks vuln,config --light --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL /opt/conda/lib/python3.9
+# Python vulnerability scan
+RUN pip install safety
+RUN safety check
 
 USER $NB_UID
