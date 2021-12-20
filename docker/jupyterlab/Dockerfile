@@ -40,7 +40,9 @@ RUN apt update && \
 RUN R CMD javareconf -e && \
     R -e "install.packages('RTextTools', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('configr', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
-    R -e "install.packages('RegSDC', dependencies=FALSE, repos='http://cran.rstudio.com/')"
+    R -e "install.packages('RegSDC', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('oysteR', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "require(devtools); install_version('widgetframe', version = '0.3.0')"  # Just for test detecting vulnerabilities
 
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
@@ -205,3 +207,8 @@ RUN mkdir "$WORKON_HOME" && \
     chown -R $NB_UID "$WORKON_HOME"
 
 USER $NB_UID
+
+# Copy and run R-script for scanning installed R-packages
+# docker build fails if vulnerabilities are found
+COPY scan.R /tmp/
+RUN Rscript /tmp/scan.R
