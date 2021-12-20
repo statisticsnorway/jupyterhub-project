@@ -58,6 +58,8 @@ variables:
     value: '15000'
   - name: DECODE_PERCENTS
     value: false
+  - name: trivyVersion
+    value: 0.21.2
 
 jobs:
   - job: pullJavaDependencies
@@ -96,6 +98,12 @@ jobs:
     displayName: 'Build Docker image for jupyterlab'
     dependsOn: pullJavaDependencies
     steps:
+      - script: |
+          sudo apt-get install rpm
+          wget https://github.com/aquasecurity/trivy/releases/download/v$(trivyVersion)/trivy_$(trivyVersion)_Linux-64bit.deb
+          sudo dpkg -i trivy_$(trivyVersion)_Linux-64bit.deb
+          trivy -v
+        displayName: 'Download and install Trivy'
       # Download pipleline artifact
       - download: current
         displayName: 'Download pipeline artifact'
@@ -212,6 +220,13 @@ jobs:
           tags: |
             ${{ variables.imageTagLatest }}
             ${{ variables.imageTagBeforeVulnerabilityScan }}
+
+      - task: CmdLine@2
+        displayName: "Run trivy scan on final image"
+        inputs:
+          script: |
+            trivy image --exit-code 0 --severity LOW,MEDIUM ${{ variables.imageName }}:${{ variables.imageTagLatest }}
+            trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ variables.imageName }}:${{ variables.imageTagLatest }}
 
       # Push Docker Image to GCR
       - task: Docker@2
