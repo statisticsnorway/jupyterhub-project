@@ -221,8 +221,9 @@ jobs:
             ${{ variables.imageTagLatest }}
             ${{ variables.imageTagBeforeVulnerabilityScan }}
 
+      # Trivy vulnerability scan, includes python packages installed in image
       - task: CmdLine@2
-        displayName: "Run trivy scan on final image"
+        displayName: "Trivy vulnerability scan final image"
         inputs:
           script: |
             trivy image --exit-code 0 --severity LOW,MEDIUM ${{ variables.imageName }}:${{ variables.imageTagLatest }}
