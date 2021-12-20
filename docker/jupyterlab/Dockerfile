@@ -224,4 +224,13 @@ ENV WORKON_HOME="/virtualenvs"
 RUN mkdir "$WORKON_HOME" && \
     chown -R $NB_UID "$WORKON_HOME"
 
+RUN sudo apt-get -y update && \
+    sudo apt-get -y install rpm && \
+    wget https://github.com/aquasecurity/trivy/releases/download/v$(trivyVersion)/trivy_$(trivyVersion)_Linux-64bit.deb && \
+    sudo dpkg -i trivy_$(trivyVersion)_Linux-64bit.deb && \
+    trivy -v
+
+RUN trivy fs --security-checks vuln,config --light --ignore-unfixed --exit-code 0 --severity LOW,MEDIUM /opt/conda/lib/python3.9 && \
+    trivy fs --security-checks vuln,config --light --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL /opt/conda/lib/python3.9
+
 USER $NB_UID

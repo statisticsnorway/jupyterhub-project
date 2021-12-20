@@ -98,15 +98,6 @@ jobs:
     displayName: 'Build Docker image for jupyterlab'
     dependsOn: pullJavaDependencies
     steps:
-      # Trivy is a vulnerability scanner that also scans installed python packages
-      - script: |
-          sudo apt-get -y update
-          sudo apt-get -y install rpm
-          wget https://github.com/aquasecurity/trivy/releases/download/v$(trivyVersion)/trivy_$(trivyVersion)_Linux-64bit.deb
-          sudo dpkg -i trivy_$(trivyVersion)_Linux-64bit.deb
-          trivy -v
-        displayName: 'Download and install Trivy'
-
       # Download pipleline artifact
       - download: current
         displayName: 'Download pipeline artifact'
@@ -223,14 +214,6 @@ jobs:
           tags: |
             ${{ variables.imageTagLatest }}
             ${{ variables.imageTagBeforeVulnerabilityScan }}
-
-      # Trivy vulnerability scan, includes python packages installed in image
-      - task: CmdLine@2
-        displayName: "Trivy vulnerability scan final image"
-        inputs:
-          script: |
-            trivy image --light --ignore-unfixed --exit-code 0 --severity LOW,MEDIUM ${{ variables.imageName }}:${{ variables.imageTagLatest }}
-            trivy image --light --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL ${{ variables.imageName }}:${{ variables.imageTagLatest }}
 
       # Push Docker Image to GCR
       - task: Docker@2
