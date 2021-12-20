@@ -58,8 +58,6 @@ variables:
     value: '15000'
   - name: DECODE_PERCENTS
     value: false
-  - name: trivyVersion
-    value: 0.21.2
 
 jobs:
   - job: pullJavaDependencies
