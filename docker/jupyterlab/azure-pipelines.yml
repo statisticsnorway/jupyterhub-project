@@ -229,8 +229,8 @@ jobs:
         displayName: "Trivy vulnerability scan final image"
         inputs:
           script: |
-            trivy image --exit-code 0 --severity LOW,MEDIUM ${{ variables.imageName }}:${{ variables.imageTagLatest }}
-            trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ variables.imageName }}:${{ variables.imageTagLatest }}
+            trivy image --light --ignore-unfixed --exit-code 0 --severity LOW,MEDIUM ${{ variables.imageName }}:${{ variables.imageTagLatest }}
+            trivy image --light --ignore-unfixed --exit-code 1 --severity HIGH,CRITICAL ${{ variables.imageName }}:${{ variables.imageTagLatest }}
 
       # Push Docker Image to GCR
       - task: Docker@2
