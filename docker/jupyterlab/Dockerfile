@@ -1,72 +1,55 @@
-# Image contains R and littler
-FROM rocker/r-base:4.1.1 AS ssb-r-packages
+# Image contains Spark 3.2.0
+# jupyter/pyspark-notebook includes Python support for Apache Spark and pyarrow library
+FROM jupyter/pyspark-notebook:spark-3.2.0 AS ssb-r-packages
 
+USER root
+
+# We will install R and packages using instructions from https://cloud.r-project.org/
+# Should be installed into /usr/lib/R/site-library
 RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends \
-		libglpk-dev \
-		libssl-dev \
-		libxml2-dev \
-	    libcurl4-openssl-dev \
+		software-properties-common dirmngr build-essential curl libssl-dev libcurl4-openssl-dev libgdal-dev \
+    # add the signing key (by Michael Rutter) for these repos
+    # To verify key, run gpg --show-keys /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+    # Fingerprint: 298A3A825C0D65DFD57CBB651716619E084DAB9
+    && wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc \
+        | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc \
+    # add the R 4.0 repo from CRAN -- adjust 'focal' to 'groovy' or 'bionic' as needed
+    && add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" \
+    # Get access to 5000+ CRAN Packages
+    && add-apt-repository ppa:c2d4u.team/c2d4u4.0+ \
 	&& apt autoremove -y \
 	&& apt-get -y clean all \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV BASE_PACKAGES renv lattice codetools Matrix MASS stringi magrittr backports jsonlite R6 httr digest rlang \
-    htmltools xfun highr evaluate stringr markdown knitr checkmate NLP BH slam tm remotes validate dcmodify rpart \
-    simputation lumberjack plotly dash
-ENV EXT_PACKAGES tables tidyverse docopt data.table sdcTable SmallCountRounding configr e1071 RTextTools
-ENV SSB_PACKAGES SSBtools easySdcTable RegSDC PxWebApiData klassR
+ENV R_HOME /usr/lib/R
 
-RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', dependencies = TRUE, Ncpus = $(nproc))" >> /etc/R/Rprofile.site \
-    && echo 'source("/etc/R/Rprofile.site")' >> /etc/littler.r \
-	&& install.r ${BASE_PACKAGES} ${EXT_PACKAGES} ${SSB_PACKAGES} \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& rm -rf /tmp/downloaded_packages/ /tmp/*.rds
-
-# Image contains Spark 3.2.0
-# jupyter/all-spark-notebook includes Python, R, and Scala support for Apache Spark.
-FROM jupyter/all-spark-notebook:spark-3.2.0 AS ssb-notebook-image
-
-# Install SSH client
-USER root
+COPY r-packages.txt /tmp/r-packages.txt
 
 RUN apt update && \
     apt-get -y clean all && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
-    apt-get install --no-install-recommends -y openssh-client r-cran-rglpk glpk-utils libglpk-dev libpoppler-cpp-dev \
-    zlib1g-dev libgit2-dev libtesseract-dev libleptonica-dev libgdal-dev libjpeg62 r-cran-rjava default-jdk && \
+    xargs apt-get install -y --no-install-recommends < /tmp/r-packages.txt && \
     apt autoremove -y && \
     apt-get -y clean all && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy R libraries from ssb-r-packages container
-COPY --from=ssb-r-packages /usr/local/lib/R/site-library /opt/conda/lib/R/library
-
-# Copy R library dependencies from ssb-r-packages container
-COPY --from=ssb-r-packages /usr/lib/R/library /opt/conda/lib/R/library
-
-# Fix conda permission
-RUN chown -R $NB_UID:$NB_GID /opt/conda
-
-USER $NB_UID
-
-# Install R libraries from conda (the rest is copied from the ssb-r-packages container)
-RUN conda update -n base conda && \
-    conda install --quiet --yes r-reticulate r-arrow r-devtools r-languageserver r-rgdal r-units \
-    r-ggraph r-tidygraph r-nabor && \
-    conda clean --all -f -y
-
-# Create a conda env (r-reticulate) that enables R to execute Python code
-RUN conda create -y -n r-reticulate python=3.9.7 numpy
-
-# RJDemetra depends on r-rjava 
+# Setup R java support and install R packages that are not available as Ubuntu packages
 RUN R CMD javareconf -e && \
-    R -e "install.packages('RJDemetra', '/opt/conda/lib/R/library', dependencies=TRUE, repos='http://cran.rstudio.com/')"
+    R -e "install.packages('RTextTools', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('configr', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('RegSDC', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('oysteR', dependencies=TRUE, repos='http://cran.rstudio.com/')"
+
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+
+FROM ssb-r-packages AS ssb-notebook-image
+
+USER $NB_UID
 
 RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install --upgrade jupyterlab-git && \
@@ -233,3 +216,8 @@ RUN pip install safety
 RUN safety check
 
 USER $NB_UID
+
+# Copy and run R-script for scanning installed R-packages
+# docker build fails if vulnerabilities are found
+COPY scan.R /tmp/
+RUN Rscript /tmp/scan.R
