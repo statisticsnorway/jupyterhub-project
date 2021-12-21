@@ -205,8 +205,6 @@ ENV WORKON_HOME="/virtualenvs"
 RUN mkdir "$WORKON_HOME" && \
     chown -R $NB_UID "$WORKON_HOME"
 
-RUN rm -rf /home/jovyan/.cache
-
 # Image vulnerability scan. If exit code set to 1, fails image build
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
 RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
@@ -215,9 +213,11 @@ RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
 RUN pip install safety
 RUN safety check
 
-USER $NB_UID
-
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
 COPY scan.R /tmp/
 RUN Rscript /tmp/scan.R
+
+RUN rm -rf /home/jovyan/.cache
+
+USER $NB_UID
