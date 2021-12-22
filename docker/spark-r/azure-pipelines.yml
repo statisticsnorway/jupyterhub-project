@@ -16,7 +16,7 @@ resources:
     - repository: templates
       type: github
       name: statisticsnorway/azure-pipelines-templates
-      ref: refs/tags/0.1.3
+      ref: refs/tags/1.1.28
       endpoint: statisticsnorway (6)
 
     # Pipeline will be run on this base image
@@ -51,12 +51,19 @@ jobs:
     condition: eq(False, startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     displayName: 'Build Docker image for dapla spark R operator'
     steps:
+      - task: Docker@2
+        displayName: Build and scan
+        inputs:
+          command: build
+          Dockerfile: 'docker/spark-r/Dockerfile'
+          repository: $(repoName)-scan
+
       - template: docker/docker-build-image-and-push-to-gcr.yml@templates
         parameters:
-          project: dapla
           imageName: $(imageName)
           repoName: $(repoName)
           Dockerfile: 'docker/spark-r/Dockerfile'
+          buildArguments: '--target prod'
 
       # Need to tag 'latest' image (used by docker-tag-for-production)
       - script: |
