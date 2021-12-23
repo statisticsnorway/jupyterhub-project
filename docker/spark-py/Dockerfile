@@ -20,13 +20,11 @@ RUN set -ex && \
     apt-get -y dist-upgrade && \
     apt install -y python3 python3-pip && \
     pip3 install --upgrade pip setuptools && \
-    # You may install python3 packages by using pip3
-    # Remove the .cache to save space
     apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
     libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
-    rm -r /root/.cache && rm -rf /var/cache/apt/*
+    rm -r /root/.cache && rm -rf /var/cache/apt/*     # Remove the .cache to save space
 
 # Add Tini (not found via apt-get)
 ENV TINI_VERSION v0.19.0
