@@ -23,6 +23,7 @@ RUN apt-get update -y \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV R_HOME /usr/lib/R
+ENV R_LIBS_USER /usr/lib/R/library
 
 COPY r-packages.txt /tmp/r-packages.txt
 
@@ -204,6 +205,9 @@ RUN chmod +x /opt/dapla/pipenv_kernel.sh && \
 ENV WORKON_HOME="/virtualenvs"
 RUN mkdir "$WORKON_HOME" && \
     chown -R $NB_UID "$WORKON_HOME"
+
+# Allow notebook user to write (install) new R packages to the library
+RUN chown -R $NB_UID "$R_LIBS_USER"
 
 # Image vulnerability scan. If exit code set to 1, fails image build
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
