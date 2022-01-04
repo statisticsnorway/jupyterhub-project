@@ -145,7 +145,7 @@ RUN echo "**** install pipenv envkernel ****" && \
 
 # Customer defined libraries
 RUN echo "**** install ssb_spark_tools ****" && \
-    python3 -m pip install ssb_spark_tools==0.1.6 pytest pytest_tornasync pytest-cov pytest-mock pyjstat xmltodict lxml holidays PyGithub pre-commit pyminizip && \
+    python3 -m pip install ssb_spark_tools==0.1.6 pytest pytest_tornasync pytest-cov pytest-mock pyjstat xmltodict lxml holidays PyGithub pre-commit pyminizip rich && \
     echo "**** install sphinx ****" && \
     python3 -m pip install sphinx sphinx-autodoc-defaultargs sphinx-autodoc-typehints sphinx-rtd-theme && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
