@@ -13,6 +13,14 @@ trigger:
       - docker/spark-py
       - docker/spark-r
 
+schedules:
+  - cron: "0 12 1 * *"
+    displayName: Monthly build
+    branches:
+      include:
+        - main
+    always: true
+
 resources:
   repositories:
     - repository: templates
