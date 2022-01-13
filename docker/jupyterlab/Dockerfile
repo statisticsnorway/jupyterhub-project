@@ -23,6 +23,7 @@ RUN apt-get update -y \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV R_HOME /usr/lib/R
+ENV R_LIBS_USER /usr/lib/R/library
 
 COPY r-packages.txt /tmp/r-packages.txt
 
@@ -42,8 +43,6 @@ RUN R CMD javareconf -e && \
     R -e "install.packages('configr', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('RegSDC', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('oysteR', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
-    R -e "install.packages('here', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
-    R -e "install.packages('renv', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('rjwsacruncher', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     curl --silent -L -o- https://github.com/jdemetra/jwsacruncher/releases/download/v2.2.3/jwsacruncher-2.2.3-bin.zip | bsdtar -xvf- -C /opt && \
     chown -R $NB_UID /opt/jwsacruncher-2.2.3-bin 
@@ -211,7 +210,6 @@ RUN mkdir "$WORKON_HOME" && \
     chown -R $NB_UID "$WORKON_HOME"
 
 # Allow notebook user to write (install) new R packages to the library
-ENV R_LIBS_USER /usr/lib/R/library
 RUN chown -R $NB_UID "$R_LIBS_USER"
 
 # Image vulnerability scan. If exit code set to 1, fails image build
