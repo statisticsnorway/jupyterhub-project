@@ -29,7 +29,8 @@ RUN apt update && \
     apt-get -y clean all && \
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get -y dist-upgrade
+    apt-get -y dist-upgrade && \
+    apt-get -y install --upgrade cryptsetup
 
 FROM ssb-r-packages AS ssb-notebook-image
 
