@@ -61,7 +61,7 @@ ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
 # Python vuln check, and remove package afterwards
 RUN pip install safety && \
-    safety check && \
+    trap "safety check" EXIT && \
     pip uninstall -y safety && \
     pip cache purge
 
