@@ -31,4 +31,10 @@ RUN apt update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade
 
-USER $NB_UID
+FROM ssb-r-packages AS ssb-notebook-image
+
+RUN echo "test in ssb-notebook-image"
+
+FROM ssb-notebook-image
+
+RUN echo "test after from statement"
