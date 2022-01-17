@@ -26,6 +26,7 @@ ENV R_HOME /usr/lib/R
 ENV R_LIBS_USER /usr/lib/R/library
 
 COPY r-packages.txt /tmp/r-packages.txt
+COPY jwsacruncher-2.2.4.zip /tmp/jwsacruncher-2.2.4.zip
 
 RUN apt update && \
     apt-get -y clean all && \
@@ -44,8 +45,10 @@ RUN R CMD javareconf -e && \
     R -e "install.packages('RegSDC', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('oysteR', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('rjwsacruncher', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
-    curl --silent -L -o- https://github.com/jdemetra/jwsacruncher/releases/download/v2.2.3/jwsacruncher-2.2.3-bin.zip | bsdtar -xvf- -C /opt && \
-    fix-permissions /opt/jwsacruncher-2.2.3-bin 
+    # Doesn t work with Java11 - use a custom one
+    #curl --silent -L -o- https://github.com/jdemetra/jwsacruncher/releases/download/v2.2.3/jwsacruncher-2.2.3-bin.zip | bsdtar -xvf- -C /opt && \
+    unzip /tmp/jwsacruncher-2.2.4.zip -d /opt
+    fix-permissions /opt/jwsacruncher-2.2.4-bin
 
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
