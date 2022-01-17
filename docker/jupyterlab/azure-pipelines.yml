@@ -267,7 +267,6 @@ jobs:
           docker tag ${{ variables.imageName }}:${{ variables.imageTagBeforeVulnerabilityScan }} ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }}
           docker push ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }}
         displayName: "Retagging docker image if successful vulnerability scan"
-        condition: succeeded()
 
       # Need to tag 'latest' image (used by docker-tag-for-production)
       - script: |
