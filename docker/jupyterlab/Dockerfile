@@ -33,7 +33,6 @@ RUN apt update && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
-    apt-get -y update && \
     xargs apt-get install -y --no-install-recommends < /tmp/r-packages.txt && \
     apt autoremove -y && \
     apt-get -y clean all && \
