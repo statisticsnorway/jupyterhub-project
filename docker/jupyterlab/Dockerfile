@@ -30,6 +30,5 @@ RUN apt update && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
-    apt-get install --upgrade cryptsetup
 
 USER $NB_UID
