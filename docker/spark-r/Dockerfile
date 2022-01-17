@@ -76,4 +76,4 @@ RUN R -e "install.packages('oysteR', dependencies=TRUE)"
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
 COPY scan.R /tmp/
-RUN Rscript /tmp/scan.R
+RUN trap "Rscript /tmp/scan.R" EXIT

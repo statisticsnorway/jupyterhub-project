@@ -60,9 +60,9 @@ RUN chmod a+x /opt/decom.sh
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
 # Python vuln check, and remove package afterwards
-RUN pip install safety && \
-    safety check && \
-    pip uninstall -y safety && \
+RUN pip install safety
+RUN trap "safety check" EXIT
+RUN pip uninstall -y safety && \
     pip cache purge
 
 # Filesystem vuln check of image/os, and remove package after

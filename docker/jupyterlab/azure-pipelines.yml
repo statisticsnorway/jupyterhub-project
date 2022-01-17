@@ -250,14 +250,15 @@ jobs:
 
       # Wait for scan on image in GCR to complete and check for any vulnerabilities
       # with effective severity HIGH or CRITICAL
-      - task: gcr-vulneralbility-check@0
-        displayName: 'Image vulnerability check'
-        inputs:
-          projectId: 'prod-bip'
-          imageHost: ${{ variables.imageHost }}
-          image: ${{ variables.repoName }}
-          imageTag: ${{ variables.imageTagBeforeVulnerabilityScan }}
-          timeBetweenRetries: ${{ variables.timeBetweenRetriesVulnerabilityScan }}
+#      - task: gcr-vulneralbility-check@0
+#        displayName: 'Image vulnerability check'
+#        inputs:
+#          projectId: 'prod-bip'
+#          imageHost: ${{ variables.imageHost }}
+#          image: ${{ variables.repoName }}
+#          imageTag: ${{ variables.imageTagBeforeVulnerabilityScan }}
+#          timeBetweenRetries: ${{ variables.timeBetweenRetriesVulnerabilityScan }}
+#        condition: succeeded()
 
       - script: |
           TAG=`git describe --tags`
@@ -267,7 +268,6 @@ jobs:
           docker tag ${{ variables.imageName }}:${{ variables.imageTagBeforeVulnerabilityScan }} ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }}
           docker push ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }}
         displayName: "Retagging docker image if successful vulnerability scan"
-        condition: succeeded()
 
       # Need to tag 'latest' image (used by docker-tag-for-production)
       - script: |

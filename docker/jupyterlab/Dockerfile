@@ -222,7 +222,8 @@ RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
 
 # Python vulnerability scan
 RUN pip install safety
-RUN safety check
+RUN trap "safety check --json -o safety_results.json" EXIT
+RUN echo safety_results.json
 
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
