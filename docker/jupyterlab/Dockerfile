@@ -191,7 +191,7 @@ RUN apt update && \
     apt-get install -y --no-install-recommends \
         bash-completion jq iputils-ping traceroute && \
     rm -rf /var/lib/apt/lists/*
-RUN mkdir /opt/dapla/ && curl --silent -L -o- https://github.com/statisticsnorway/dapla-cli/releases/download/0.1.0/dapla-cli-0.1.0-linux-amd64.tar.gz \
+RUN mkdir /opt/dapla/ && curl --silent -L -o- https://github.com/statisticsnorway/dapla-cli/releases/download/0.1.1/dapla-cli-0.1.1-linux-amd64.tar.gz \
    | tar xvz -C /opt/dapla
 RUN chmod +x /opt/dapla/dapla-cli
 COPY dapla-cli.yml /opt/dapla/.dapla-cli.yml
