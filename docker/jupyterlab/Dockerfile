@@ -45,6 +45,8 @@ RUN R CMD javareconf -e && \
     R -e "install.packages('RegSDC', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('oysteR', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('writexl', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('concaveman', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('cppRouting', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('rjwsacruncher', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     # Doesn t work with Java11 - use a custom one
     #curl --silent -L -o- https://github.com/jdemetra/jwsacruncher/releases/download/v2.2.3/jwsacruncher-2.2.3-bin.zip | bsdtar -xvf- -C /opt && \
