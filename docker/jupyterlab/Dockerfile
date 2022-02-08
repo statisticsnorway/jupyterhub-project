@@ -1,6 +1,6 @@
 # Image contains Spark 3.2.0
 # jupyter/pyspark-notebook includes Python support for Apache Spark and pyarrow library
-FROM jupyter/pyspark-notebook:spark-3.2.0 AS ssb-r-packages
+FROM jupyter/pyspark-notebook:spark-3.2.1 AS ssb-r-packages
 
 USER root
 
