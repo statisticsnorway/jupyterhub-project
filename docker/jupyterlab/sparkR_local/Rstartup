@@ -30,3 +30,8 @@
   cat("\nSparkSession available as 'spark'(master = ", unlist(SparkR::sparkR.conf("spark.master")),
     ", app id = ", unlist(SparkR::sparkR.conf("spark.app.id")), ").", "\n", sep = "")
 }
+
+local({r <- getOption("repos")
+         r["CRAN"] <- "https://cran.uib.no"
+         options(repos=r)
+})
