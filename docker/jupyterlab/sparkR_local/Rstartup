@@ -7,6 +7,11 @@
   old <- getOption("defaultPackages")
   options(defaultPackages = c(old, "SparkR"))
 
+  r <- getOption("repos")
+  r["CRAN"] <- "https://cran.uib.no/"
+  options(repos = r)
+  rm(r)
+
   spark <- SparkR::sparkR.session()
   assign("spark", spark, envir = .GlobalEnv)
   sc <- SparkR:::callJStatic("org.apache.spark.sql.api.r.SQLUtils", "getJavaSparkContext", spark)
@@ -29,10 +34,4 @@
   cat("\nSparkSession Web UI available at", SparkR::sparkR.uiWebUrl())
   cat("\nSparkSession available as 'spark'(master = ", unlist(SparkR::sparkR.conf("spark.master")),
     ", app id = ", unlist(SparkR::sparkR.conf("spark.app.id")), ").", "\n", sep = "")
-
-  local({r <- getOption("repos")
-           r["CRAN"] <- "https://cran.uib.no/"
-           options(repos=r)
-  })
-
 }
