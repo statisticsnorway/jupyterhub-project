@@ -32,6 +32,6 @@
 }
 
 local({r <- getOption("repos")
-         r["CRAN"] <- "https://cran.uib.no"
+         r["CRAN"] <- "https://cran.uib.no/"
          options(repos=r)
 })
