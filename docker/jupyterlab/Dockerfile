@@ -1,13 +1,15 @@
-# Image contains Spark 3.2.0
+# Image contains Spark 3.x
 # jupyter/pyspark-notebook includes Python support for Apache Spark and pyarrow library
 FROM jupyter/pyspark-notebook:spark-3.2.1 AS ssb-r-packages
 
+# Must match https://github.com/jupyter/docker-stacks/blob/master/pyspark-notebook/Dockerfile#L20
+ARG openjdk_version="11"
 USER root
 
 # We will install R and packages using instructions from https://cloud.r-project.org/
 # Should be installed into /usr/lib/R/site-library
 RUN apt-get update -y \
-	&& apt-get install -y --no-install-recommends \
+	&& apt-get install -y --no-install-recommends "openjdk-${openjdk_version}-jdk-headless" \
 		software-properties-common dirmngr build-essential curl libssl-dev libcurl4-openssl-dev libgdal-dev \
     # add the signing key (by Michael Rutter) for these repos
     # To verify key, run gpg --show-keys /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
