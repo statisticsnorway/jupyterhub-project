@@ -51,6 +51,9 @@ RUN R CMD javareconf -e && \
     R -e "install.packages('cppRouting', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('rjwsacruncher', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('klassR', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('antiword', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('textshape', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('striprtf', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('textreadr', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('terra', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('raster', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
