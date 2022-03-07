@@ -36,3 +36,4 @@ r-cran-tau
 r-cran-here
 r-cran-pdftools
 r-cran-tesseract
+r-cran-sp
