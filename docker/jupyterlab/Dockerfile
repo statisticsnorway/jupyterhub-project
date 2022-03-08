@@ -51,6 +51,13 @@ RUN R CMD javareconf -e && \
     R -e "install.packages('cppRouting', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('rjwsacruncher', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('klassR', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('antiword', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('textshape', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('striprtf', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('textreadr', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('terra', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('raster', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('leaflet', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     # Doesn t work with Java11 - use a custom one
     #curl --silent -L -o- https://github.com/jdemetra/jwsacruncher/releases/download/v2.2.3/jwsacruncher-2.2.3-bin.zip | bsdtar -xvf- -C /opt && \
     unzip /tmp/jwsacruncher-2.2.4.zip -d /opt && fix-permissions /opt/jwsacruncher-2.2.4 && rm -f /tmp/jwsacruncher-2.2.4.zip
