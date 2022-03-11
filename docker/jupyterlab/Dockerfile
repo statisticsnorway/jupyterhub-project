@@ -117,7 +117,7 @@ RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install jupyterlab-system-monitor && \
     echo "**** install jupytext ****" && \
     python3 -m pip install jupytext && \
-    jupyter labextension install --no-build jupyterlab-jupytext && \
+    #jupyter labextension install --no-build jupyterlab-jupytext && \
     echo "**** uninstall IPython Parallels (comes default with dockerhub image)  ****" && \
     python3 -m pip uninstall -y ipyparallel && \
     python3 -m pip cache purge && \
