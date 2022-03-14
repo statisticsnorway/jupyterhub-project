@@ -11,3 +11,4 @@ make update-all
 
 * [Jupyterhub extensions](https://github.com/statisticsnorway/jupyterhub-extensions)
 * [Jupyterhub GCP](https://github.com/statisticsnorway/jupyterhub-gcp)
+* [Dapla Toolbelt](https://github.com/statisticsnorway/dapla-toolbelt)
