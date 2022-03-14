@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printf '\dapla-migration-project'
+printf '\jupyterhub-project'
 echo "----------------------------------------------------------------"
 git status --short
 
