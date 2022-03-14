@@ -1,2 +1,3 @@
 jupyterhub-extensions
 jupyterhub-gcp
+dapla-toolbelt
