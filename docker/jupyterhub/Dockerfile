@@ -11,8 +11,7 @@ RUN apt update && \
 
 RUN pip install tokenexchangeauthenticator==0.1.3
 
-RUN pip uninstall jupyterhub-kubespawner && \
-   pip install git+https://github.com/JJ11teen/kubespawner.git@istio
+RUN pip install --upgrade git+https://github.com/JJ11teen/kubespawner.git@istio
 
 USER jovyan
 
