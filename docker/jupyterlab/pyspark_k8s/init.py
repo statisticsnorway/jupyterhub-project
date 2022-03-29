@@ -25,6 +25,9 @@ try:
     spark = SparkSession.builder.appName(appName) \
         .config('spark.submit.deployMode', 'client') \
         .config('spark.driver.host', local_ip) \
+        .config('spark.driver.port', os.environ.get("SPARK_DRIVER_PORT", "0")) \
+        .config('spark.blockManager.port', os.environ.get("SPARK_BLOCKMANAGER_PORT", "0")) \
+        .config('spark.port.maxRetries', os.environ.get("SPARK_PORT_MAX_RETRIES", "0")) \
         .config('spark.executorEnv.JUPYTERHUB_API_TOKEN', os.environ["JUPYTERHUB_API_TOKEN"]) \
         .config('spark.kubernetes.driver.pod.name', os.environ["HOSTNAME"]) \
         .getOrCreate()
