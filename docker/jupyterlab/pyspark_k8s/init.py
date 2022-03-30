@@ -5,30 +5,47 @@ import string
 import random
 import platform
 import warnings
+import time
 from pyspark.context import SparkContext
 from pyspark.sql import SparkSession
 from dapla.spark.sparkui import uiWebUrl
 
-# Get the local ip.
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.connect((os.environ.get("KUBERNETES_SERVICE_HOST", "8.8.8.8"), 80))
-local_ip = s.getsockname()[0]
-s.close()
 
-randomId = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-appName = os.environ["JUPYTERHUB_CLIENT_ID"] + '-' + randomId
+def generate_app_name():
+    randomId = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+    return os.environ["JUPYTERHUB_CLIENT_ID"] + '-' + randomId
+
+
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect((os.environ.get("KUBERNETES_SERVICE_HOST", "8.8.8.8"), 80))
+    local_ip = s.getsockname()[0]
+    s.close()
+    return local_ip
+
+
+def generate_k8s_pod_name_prefix():
+    prefix = f"{os.environ['HOSTNAME']}-{str(time.time_ns())}"
+    # Max length of pod name in k8s is 63 chars
+    # Spark executors are named by the prefix + exec-nn
+    # Where nn are number of executors (1-20)
+    maxlength = len(f"{prefix}-exec-nn")
+    if maxlength > 63:
+        return prefix[maxlength-63:]
+    return prefix
 
 # This is similar to /pyspark/shell.py
 SparkContext._ensure_initialized()  # type: ignore
 
 try:
-    spark = SparkSession.builder.appName(appName) \
+    spark = SparkSession.builder.appName(generate_app_name()) \
         .config('spark.submit.deployMode', 'client') \
-        .config('spark.driver.host', local_ip) \
+        .config('spark.driver.host', get_local_ip()) \
         .config('spark.driver.port', os.environ.get("SPARK_DRIVER_PORT", "0")) \
         .config('spark.blockManager.port', os.environ.get("SPARK_BLOCKMANAGER_PORT", "0")) \
         .config('spark.port.maxRetries', os.environ.get("SPARK_PORT_MAX_RETRIES", "0")) \
         .config('spark.executorEnv.JUPYTERHUB_API_TOKEN', os.environ["JUPYTERHUB_API_TOKEN"]) \
+        .config('spark.kubernetes.executor.podNamePrefix', generate_k8s_pod_name_prefix()) \
         .config('spark.kubernetes.driver.pod.name', os.environ["HOSTNAME"]) \
         .getOrCreate()
 except Exception:
