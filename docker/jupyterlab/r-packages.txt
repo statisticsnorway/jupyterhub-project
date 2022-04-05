@@ -37,3 +37,4 @@ r-cran-here
 r-cran-pdftools
 r-cran-tesseract
 r-cran-sp
+r-cran-validate
