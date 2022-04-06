@@ -250,15 +250,15 @@ jobs:
 
       # Wait for scan on image in GCR to complete and check for any vulnerabilities
       # with effective severity HIGH or CRITICAL
-      - task: gcr-vulneralbility-check@0
-        displayName: 'Image vulnerability check'
-        inputs:
-          projectId: 'prod-bip'
-          imageHost: ${{ variables.imageHost }}
-          image: ${{ variables.repoName }}
-          imageTag: ${{ variables.imageTagBeforeVulnerabilityScan }}
-          timeBetweenRetries: ${{ variables.timeBetweenRetriesVulnerabilityScan }}
-        condition: succeeded()
+      #- task: gcr-vulneralbility-check@0
+      #  displayName: 'Image vulnerability check'
+      #  inputs:
+      #    projectId: 'prod-bip'
+      #    imageHost: ${{ variables.imageHost }}
+      #    image: ${{ variables.repoName }}
+      #    imageTag: ${{ variables.imageTagBeforeVulnerabilityScan }}
+      #    timeBetweenRetries: ${{ variables.timeBetweenRetriesVulnerabilityScan }}
+      #  condition: succeeded()
 
       - script: |
           TAG=`git describe --tags`
