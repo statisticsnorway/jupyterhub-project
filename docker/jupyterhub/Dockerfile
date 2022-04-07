@@ -1,5 +1,5 @@
 # Use latest from https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/main/images/hub
-FROM jupyterhub/k8s-hub:1.1.3-n404.hb6e0397d
+FROM jupyterhub/k8s-hub:1.2.0
 
 USER root
 
@@ -11,6 +11,8 @@ RUN apt update && \
     apt-get -y dist-upgrade
 
 RUN pip install tokenexchangeauthenticator==0.1.3
+
+RUN pip install jupyterhub==2.2.2
 
 # https://github.com/jupyterhub/kubespawner/pull/425
 RUN pip install --upgrade git+https://github.com/JJ11teen/kubespawner.git@istio
