@@ -1,4 +1,5 @@
-FROM jupyterhub/k8s-hub:1.2.0
+# Use latest from https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/main/images/hub
+FROM jupyterhub/k8s-hub:1.1.3-n404.hb6e0397d
 
 USER root
 
