@@ -12,7 +12,12 @@
   options(repos = r)
   rm(r)
 
-  spark <- SparkR::sparkR.session(sparkConfig = list(spark.executorEnv.JUPYTERHUB_API_TOKEN = Sys.getenv("JUPYTERHUB_API_TOKEN")))
+  spark <- SparkR::sparkR.session(sparkConfig = list(
+    spark.driver.port = Sys.getenv("SPARK_DRIVER_PORT", "0")),
+    spark.blockManager.port = Sys.getenv("SPARK_BLOCKMANAGER_PORT", "0")),
+    spark.port.maxRetries = Sys.getenv("SPARK_PORT_MAX_RETRIES", "0")),
+    spark.executorEnv.JUPYTERHUB_API_TOKEN = Sys.getenv("JUPYTERHUB_API_TOKEN")),
+  )
   assign("spark", spark, envir = .GlobalEnv)
   sc <- SparkR:::callJStatic("org.apache.spark.sql.api.r.SQLUtils", "getJavaSparkContext", spark)
   assign("sc", sc, envir = .GlobalEnv)
