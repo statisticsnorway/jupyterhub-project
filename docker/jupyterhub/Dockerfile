@@ -14,7 +14,7 @@ RUN pip install tokenexchangeauthenticator==0.1.3
 
 RUN pip install jupyterhub==2.2.2
 
-RUN pip install jupyterhub-kubespawner
+RUN pip install jupyterhub-kubespawner>=4.0.0
 
 USER jovyan
 
