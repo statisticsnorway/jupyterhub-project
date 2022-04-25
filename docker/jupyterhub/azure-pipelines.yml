@@ -75,7 +75,8 @@ jobs:
           docker tag ${{ variables.imageName }}:${{ variables.imageTagAfterVulnerabilityScan }} ${{ variables.imageName }}:latest
           docker push ${{ variables.imageName }}:latest
         displayName: "Retagging latest image"
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+      # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
 
   # Job which pulls the Docker image with the 'latest' tag from GCR, tags this

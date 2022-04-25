@@ -14,8 +14,7 @@ RUN pip install tokenexchangeauthenticator==0.1.3
 
 RUN pip install jupyterhub==2.2.2
 
-# https://github.com/jupyterhub/kubespawner/pull/425
-RUN pip install --upgrade git+https://github.com/JJ11teen/kubespawner.git@istio
+RUN pip install jupyterhub-kubespawner>=4.0.0
 
 USER jovyan
 
