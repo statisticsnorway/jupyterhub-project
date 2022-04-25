@@ -11,7 +11,6 @@ RUN apt update && \
     apt-get -y dist-upgrade
 
 RUN pip install tokenexchangeauthenticator==0.1.3  && \
-    pip install jupyterhub==2.2.2 && \
     pip install --upgrade jupyterhub-kubespawner
 
 USER jovyan
