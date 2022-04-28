@@ -239,8 +239,8 @@ RUN mkdir "$WORKON_HOME" && \
 RUN chown -R $NB_UID "$R_LIBS_USER"
 
 # Image vulnerability scan. If exit code set to 1, fails image build
-COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
-RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
+#COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
+#RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
 
 # Python vulnerability scan
 RUN pip install safety
