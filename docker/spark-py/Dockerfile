@@ -59,6 +59,8 @@ RUN chmod g+w /opt/spark/work-dir
 RUN chmod a+x /opt/decom.sh
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
+# Default libs
+RUN pip3 install numpy
 # Python vuln check, and remove package afterwards
 RUN pip install safety
 RUN trap "safety check" EXIT
