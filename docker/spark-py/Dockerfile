@@ -60,7 +60,7 @@ RUN chmod a+x /opt/decom.sh
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
 # Default libs
-RUN pip3 install numpy joblib
+RUN pip3 install numpy joblib sklearn
 # Python vuln check, and remove package afterwards
 RUN pip install safety
 RUN trap "safety check" EXIT
