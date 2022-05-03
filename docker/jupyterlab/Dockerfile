@@ -85,7 +85,7 @@ RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install jupyter-server-proxy && \
     echo "**** install holoviz panel ****" && \
     python3 -m pip install pyviz_comms && \
-    python3 -m pip install panel && \
+    python3 -m pip install panel==0.13.1a2 && \
     echo "**** install Voilà ****" && \
     python3 -m pip install voila && \
     echo "**** install Plotly ****" && \
