@@ -16,7 +16,7 @@
     spark.driver.port = Sys.getenv("SPARK_DRIVER_PORT", "0"),
     spark.blockManager.port = Sys.getenv("SPARK_BLOCKMANAGER_PORT", "0"),
     spark.port.maxRetries = Sys.getenv("SPARK_PORT_MAX_RETRIES", "0"),
-    spark.executorEnv.JUPYTERHUB_API_TOKEN = Sys.getenv("JUPYTERHUB_API_TOKEN"))
+    spark.executorEnv.JUPYTERHUB_API_TOKEN = Sys.getenv("JUPYTERHUB_API_TOKEN"),
     spark.kubernetes.driver.pod.name = Sys.getenv("HOSTNAME"))
   )
   assign("spark", spark, envir = .GlobalEnv)
