@@ -12,11 +12,27 @@
   options(repos = r)
   rm(r)
 
+  get_local_ip <- function() {
+    return(nsl(Sys.info()["nodename"]))
+  }
+
+  generate_k8s_pod_name_prefix <- function() {
+    prefix <- paste(Sys.getenv("HOSTNAME"), '-', round(as.numeric(Sys.time())*1000000), '-r', sep="")
+    # Max length of pod name in k8s is 63 chars
+    # Spark executors are named by the prefix + exec-nn
+    # Where nn are number of executors (1-20)
+    maxlength = nchar(paste(prefix, "-exec-nn", sep=""))
+    return(substr(prefix, maxlength - 63, maxlength))
+  }
+
   spark <- SparkR::sparkR.session(sparkConfig = list(
+    spark.submit.deployMode = 'client',
+    spark.driver.host = get_local_ip(),
     spark.driver.port = Sys.getenv("SPARK_DRIVER_PORT", "0"),
     spark.blockManager.port = Sys.getenv("SPARK_BLOCKMANAGER_PORT", "0"),
     spark.port.maxRetries = Sys.getenv("SPARK_PORT_MAX_RETRIES", "0"),
     spark.executorEnv.JUPYTERHUB_API_TOKEN = Sys.getenv("JUPYTERHUB_API_TOKEN"),
+    spark.kubernetes.executor.podNamePrefix = generate_k8s_pod_name_prefix(),
     spark.kubernetes.driver.pod.name = Sys.getenv("HOSTNAME"))
   )
   assign("spark", spark, envir = .GlobalEnv)
