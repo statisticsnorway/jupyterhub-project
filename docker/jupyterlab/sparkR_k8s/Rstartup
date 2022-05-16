@@ -12,6 +12,7 @@
   options(repos = r)
   rm(r)
 
+  library(utils)
   get_local_ip <- function() {
     return(nsl(Sys.info()["nodename"]))
   }
