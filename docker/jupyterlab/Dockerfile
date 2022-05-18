@@ -65,6 +65,7 @@ RUN R CMD javareconf -e && \
 
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
+    rm -rf /home/jovyan/.cache && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 FROM ssb-r-packages AS ssb-notebook-image
