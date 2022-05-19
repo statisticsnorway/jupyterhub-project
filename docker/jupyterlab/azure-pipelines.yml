@@ -62,8 +62,6 @@ variables:
     value: '$(Build.SourceBranchName)-notebook-latest'
   - name: imageTagLatest
     value: '$(Build.SourceBranchName)-latest'
-  - name: imageTagNoK8SLatest
-    value: '$(Build.SourceBranchName)-no-k8s-latest'
   - name: timeBetweenRetriesVulnerabilityScan
     value: '15000'
   - name: DECODE_PERCENTS
@@ -242,31 +240,6 @@ jobs:
           tags: |
             ${{ variables.imageTagLatest }}
             ${{ variables.imageTagBeforeVulnerabilityScan }}
-
-      # Build Docker with no k8s option
-      - task: Docker@2
-        displayName: 'Build final image with no k8s option'
-        inputs:
-          repository: ${{ variables.repoName }}
-          command: 'build'
-          Dockerfile: 'docker/jupyterlab/Dockerfile'
-          arguments: '--cache-from=${{ variables.imageName }}:${{ variables.imageBuilderLatest }}
-                      --cache-from=${{ variables.imageName }}:${{ variables.imageNotebookLatest }}
-                      --cache-from=${{ variables.imageName }}:${{ variables.imageTagLatest }}
-                      --build-arg K8S_SUPPORTED=false'
-          tags: |
-            ${{ variables.imageTagNoK8SLatest }}
-
-      # Push Docker Image to GCR
-      - task: Docker@2
-        displayName: 'Push final image with no k8s option'
-        inputs:
-          ContainerRegistry: |
-            gcrServiceConnection
-          repository: ${{ variables.repoName }}
-          command: 'push'
-          tags: |
-            ${{ variables.imageTagNoK8SLatest }}
 
       # Set env variable pointing to the file downloaded in previous task
       # as a library in next task needs this env variable
