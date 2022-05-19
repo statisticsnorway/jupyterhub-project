@@ -133,6 +133,7 @@ RUN jupyter lab build --dev-build=False && \
     python3 -m pip install --upgrade jupyterhub && \
     jupyterhub upgrade-db
 
+ARG K8S_SUPPORTED="true"
 # Copy the kernels. (pre-defined kernels are found at /opt/conda/share/jupyter/kernels)
 COPY pyspark_k8s /usr/local/share/jupyter/kernels/pyspark_k8s/
 COPY pyspark_local /usr/local/share/jupyter/kernels/pyspark_local/
@@ -140,6 +141,8 @@ COPY sparkR_k8s/kernel.json /opt/conda/share/jupyter/kernels/ir_k8s/
 COPY sparkR_k8s/Rstartup /opt/conda/share/jupyter/kernels/ir_k8s/
 COPY sparkR_local/kernel.json /opt/conda/share/jupyter/kernels/ir/
 COPY sparkR_local/Rstartup /opt/conda/share/jupyter/kernels/ir/
+
+RUN if [ "$K8S_SUPPORTED" = "false" ] ; then rm -rf /usr/local/share/jupyter/kernels/pyspark_k8s /opt/conda/share/jupyter/kernels/ir_k8s; fi
 
 # See https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#startup-hooks
 COPY env.sh /usr/local/bin/before-notebook.d/env.sh
