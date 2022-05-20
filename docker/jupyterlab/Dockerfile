@@ -148,6 +148,8 @@ COPY env.sh /usr/local/bin/before-notebook.d/env.sh
 COPY spark-defaults.conf /tmp/spark-defaults.conf
 
 USER root
+RUN chown -R $NB_UID /usr/local/share/jupyter/kernels
+RUN chown -R $NB_UID /opt/conda/share/jupyter/kernels
 # Add extra config to jupyter_notebook_config.py
 COPY jupyter_notebook_extra_config.py /tmp/
 RUN cat /tmp/jupyter_notebook_extra_config.py >> /etc/jupyter/jupyter_notebook_config.py && \
