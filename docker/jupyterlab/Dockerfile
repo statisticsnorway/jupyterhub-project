@@ -195,7 +195,7 @@ COPY gcs-connector-shaded.jar /jupyter/lib/gcs-connector-hadoop.jar
 # Copy the access token provider for the GCS connector
 COPY access-token-provider-shaded.jar /jupyter/lib/access-token-provider.jar
 # Copy the Apache Spark SQL connector for Google BigQuery
-COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-dependencies_2.12.jar
+COPY spark-2.4-bigquery.jar /jupyter/lib/spark-2.4-bigquery.jar
 # Copy Apache Spark Avro connector
 COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
 
