@@ -10,7 +10,7 @@ RUN apt update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade
 
-RUN pip install tokenexchangeauthenticator==0.1.3  && \
+RUN pip install --upgrade git+https://github.com/statisticsnorway/jupyterhub-extensions.git@feature/force-refresh#subdirectory=TokenExchangeAuthenticator  && \
     pip install --upgrade jupyterhub-kubespawner
 
 USER jovyan
