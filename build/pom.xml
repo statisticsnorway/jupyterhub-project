@@ -17,7 +17,7 @@
         <dependency>
             <groupId>no.ssb.dapla.gcs</groupId>
             <artifactId>access-token-provider</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <classifier>shaded</classifier>
             <scope>compile</scope>
         </dependency>
@@ -49,7 +49,7 @@
                                 <artifactItem>
                                     <groupId>no.ssb.dapla.gcs</groupId>
                                     <artifactId>access-token-provider</artifactId>
-                                    <version>0.0.1-SNAPSHOT</version>
+                                    <version>0.0.1</version>
                                     <classifier>shaded</classifier>
                                 </artifactItem>
                                 <artifactItem>
@@ -61,7 +61,7 @@
                                 <artifactItem>
                                     <groupId>com.google.cloud.spark</groupId>
                                     <artifactId>spark-bigquery-with-dependencies_2.12</artifactId>
-                                    <version>0.22.2</version>
+                                    <version>0.24.2</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.spark</groupId>
@@ -90,7 +90,7 @@
                                 <artifactItem>
                                     <groupId>no.ssb.dapla.gcs</groupId>
                                     <artifactId>access-token-provider</artifactId>
-                                    <version>0.0.1-SNAPSHOT</version>
+                                    <version>0.0.1</version>
                                     <classifier>shaded</classifier>
                                 </artifactItem>
                                 <artifactItem>
@@ -102,7 +102,7 @@
                                 <artifactItem>
                                     <groupId>com.google.cloud.spark</groupId>
                                     <artifactId>spark-bigquery-with-dependencies_2.12</artifactId>
-                                    <version>0.22.2</version>
+                                    <version>0.24.2</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.spark</groupId>
