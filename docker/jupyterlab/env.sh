@@ -61,6 +61,5 @@ chown -R jovyan "$HOME/.local/profile.skel"
 
 if [ -e /home/jovyan/.cache//git/credential ]
 then
-    chmod 0700 /home/jovyan/.cache//git/credential
+    chmod --silent 0700 /home/jovyan/.cache//git/credential
 fi
-
