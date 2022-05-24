@@ -58,3 +58,8 @@ start_ssh_agent
 init_ssh_agent_env
 EOF
 chown -R jovyan "$HOME/.local/profile.skel"
+
+if [ -e /home/jovyan/.cache//git/credential ]
+then
+    chmod --silent 0700 /home/jovyan/.cache//git/credential
+fi
