@@ -52,3 +52,4 @@ r-cran-oecd
 r-cran-eurostat
 r-cran-wbstats
 r-cran-countrycode
+r-cran-gargle
