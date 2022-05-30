@@ -47,9 +47,7 @@ r-cran-janitor
 r-cran-hmisc
 r-cran-arsenal
 r-cran-summarytools
-r-cran-ggiraph
 r-cran-plotly
-r-cran-sotkanet
 r-cran-oecd
 r-cran-eurostat
 r-cran-wbstats
