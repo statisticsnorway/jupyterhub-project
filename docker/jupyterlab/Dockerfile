@@ -248,7 +248,7 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 # Python vulnerability scan
 RUN pip install safety
 RUN trap "safety check --json -o safety_results.json" EXIT
-RUN echo safety_results.json
+RUN cat safety_results.json
 
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
