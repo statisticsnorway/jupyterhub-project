@@ -40,3 +40,17 @@ r-cran-sp
 r-cran-validate
 r-cran-arrow
 r-cran-bigrquery
+r-cran-googlecloudstorager
+r-cran-rio
+r-cran-getpass
+r-cran-janitor
+r-cran-hmisc
+r-cran-arsenal
+r-cran-summarytools
+r-cran-ggiraph
+r-cran-plotly
+r-cran-sotkanet
+r-cran-oecd
+r-cran-eurostat
+r-cran-wbstats
+r-cran-countrycode
