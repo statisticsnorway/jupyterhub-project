@@ -256,8 +256,9 @@ RUN cat safety_results.json
 
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
-COPY scan.R /tmp/
-RUN Rscript /tmp/scan.R
+# https://github.com/tidyverse/haven/issues/681
+#COPY scan.R /tmp/
+#RUN Rscript /tmp/scan.R
 
 RUN rm -rf /home/jovyan/.cache
 
