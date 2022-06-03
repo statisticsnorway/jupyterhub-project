@@ -63,7 +63,7 @@ RUN R CMD javareconf -e && \
     #curl --silent -L -o- https://github.com/jdemetra/jwsacruncher/releases/download/v2.2.3/jwsacruncher-2.2.3-bin.zip | bsdtar -xvf- -C /opt && \
     unzip /tmp/jwsacruncher-2.2.4.zip -d /opt && fix-permissions /opt/jwsacruncher-2.2.4 && rm -f /tmp/jwsacruncher-2.2.4.zip
 
-# Install arrow
+# Install arrow C++ and GLib (C) Packages (https://arrow.apache.org/install)
 RUN apt-get update -y && \
     apt-get install -y cmake && \
     wget https://apache.jfrog.io/artifactory/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb -P /tmp/ && \
@@ -82,6 +82,10 @@ RUN apt-get update -y && \
     apt-get install -y -V libparquet-dev && \
     apt-get install -y -V libparquet-glib-dev && \
     rm -rf /tmp/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb
+
+# https://cran.r-project.org/web/packages/arrow/vignettes/install.html
+ENV NOT_CRAN true
+RUN R -e "install.packages('arrow', dependencies=FALSE, repos='https://cloud.r-project.org/')"
 
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
