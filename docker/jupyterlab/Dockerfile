@@ -85,7 +85,10 @@ RUN apt-get update -y && \
 
 # https://cran.r-project.org/web/packages/arrow/vignettes/install.html
 ENV NOT_CRAN true
-RUN R -e "install.packages('arrow', dependencies=FALSE, repos='https://cloud.r-project.org/')"
+#ENV LIBARROW_MINIMAL false
+RUN R -e "install.packages('arrow', dependencies=FALSE, repos='https://arrow-r-nightly.s3.amazonaws.com')"
+# Test it
+RUN R -e "library(arrow); arrow_info(); head(arrow::read_parquet('/usr/local/spark-3.2.1-bin-hadoop3.2/examples/src/main/resources/users.parquet'))"
 
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
