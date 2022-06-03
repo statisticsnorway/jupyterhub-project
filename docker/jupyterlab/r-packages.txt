@@ -38,5 +38,4 @@ r-cran-pdftools
 r-cran-tesseract
 r-cran-sp
 r-cran-validate
-r-cran-arrow
 r-cran-bigrquery
