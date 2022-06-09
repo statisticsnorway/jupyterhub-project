@@ -41,15 +41,15 @@ ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
 # Python 3.x is not available in the standard Debian 10 repositories, so
 # it must be built from source
-RUN wget -O Python-3.9.7.tar.xz https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tar.xz && \
-    tar -xf Python-3.9.7.tar.xz && \
-    rm Python-3.9.7.tar.xz
+RUN wget -O Python-3.10.4.tar.xz https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tar.xz && \
+    tar -xf Python-3.10.4.tar.xz && \
+    rm Python-3.10.4.tar.xz
 
-RUN cd Python-3.9.7 && \
+RUN cd Python-3.10.4 && \
     ./configure --enable-optimizations && \
     make -j 4 && \
     make install && \
-    rm -rf Python-3.9.7
+    rm -rf Python-3.10.4
 
 COPY entrypoint.sh /opt/
 COPY decom.sh /opt/
