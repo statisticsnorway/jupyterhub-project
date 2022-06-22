@@ -129,6 +129,9 @@ RUN echo "**** install jupyterlab-git ****" && \
     echo "**** uninstall IPython Parallels (comes default with dockerhub image)  ****" && \
     python3 -m pip uninstall -y ipyparallel && \
     python3 -m pip cache purge && \
+    echo "**** install lckr-jupyterlab-variableinspector ****" && \
+    python3 -m pip install --upgrade lckr-jupyterlab-variableinspector && \
+    jupyter labextension install --no-build @lckr/jupyterlab_variableinspector && \
     rm -rf /home/jovyan/.cache && \
     conda clean --all -y && \
     jupyter lab clean
