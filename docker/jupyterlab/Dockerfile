@@ -131,7 +131,6 @@ RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip cache purge && \
     echo "**** install lckr-jupyterlab-variableinspector ****" && \
     python3 -m pip install --upgrade lckr-jupyterlab-variableinspector && \
-    jupyter labextension install --no-build @lckr/jupyterlab_variableinspector && \
     rm -rf /home/jovyan/.cache && \
     conda clean --all -y && \
     jupyter lab clean
