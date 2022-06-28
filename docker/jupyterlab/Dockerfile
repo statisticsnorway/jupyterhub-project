@@ -125,9 +125,6 @@ RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install jupyterlab-system-monitor && \
     echo "**** install jupytext ****" && \
     python3 -m pip install jupytext && \
-    #Install jupyter-widgets
-    echo "**** install jupyter-widgets ****" && \
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
     echo "**** install lckr-jupyterlab-variableinspector ****" && \
     python3 -m pip install --upgrade lckr-jupyterlab-variableinspector && \
     #jupyter labextension install --no-build jupyterlab-jupytext && \
