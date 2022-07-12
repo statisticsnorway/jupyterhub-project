@@ -161,7 +161,6 @@ COPY jupyter_notebook_extra_config.py /tmp/
 RUN cat /tmp/jupyter_notebook_extra_config.py >> /etc/jupyter/jupyter_notebook_config.py && \
     rm -f /tmp/jupyter_notebook_extra_config.py && \
     fix-permissions /usr/local/spark/conf
-RUN wget -O /usr/local/bin/ssb-gitconfig.py https://raw.githubusercontent.com/statisticsnorway/kvakk-git-tools/main/ssb-gitconfig/ssb-gitconfig.py
 
 USER $NB_UID
 
@@ -206,6 +205,11 @@ COPY access-token-provider-shaded.jar /jupyter/lib/access-token-provider.jar
 COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-dependencies_2.12.jar
 # Copy Apache Spark Avro connector
 COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
+
+# Install ssb-figconfig.py script
+USER root
+RUN wget -O /usr/local/bin/ssb-gitconfig https://raw.githubusercontent.com/statisticsnorway/kvakk-git-tools/main/ssb-gitconfig/ssb-gitconfig.py
+RUN chmod +x /usr/local/bin/ssb-gitconfig
 
 # Install dapla cli:
 # - Install bash-completion
