@@ -189,8 +189,8 @@ RUN echo "**** install ssb_spark_tools ****" && \
     python3 -m pip install dapla-toolbelt==1.3.1 gcsfs==0.6.2 pyspark pyarrow google-cloud-storage
 
 #COPY configure-git-config.bash /usr/local/bin/configure-git-config.bash
-COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
-COPY git-config.bash /usr/local/bin/git-config.sh
+#COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
+#COPY git-config.bash /usr/local/bin/git-config.sh
 
 # Install ssb-gitconfig.py script
 USER root
