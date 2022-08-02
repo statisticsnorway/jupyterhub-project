@@ -211,8 +211,6 @@ COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-
 # Copy Apache Spark Avro connector
 COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
 
-
-
 # Install dapla cli:
 # - Install bash-completion
 # - Download latest release from github.
