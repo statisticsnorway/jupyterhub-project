@@ -8,7 +8,7 @@ Your Git account is not configured.
 
 To configure:
 
-  run: git-config.sh
+  run: ssb-gitconfig.py
 
 EOF
 fi

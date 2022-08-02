@@ -188,9 +188,15 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install ipython extensions" && \
     python3 -m pip install dapla-toolbelt==1.3.1 gcsfs==0.6.2 pyspark pyarrow google-cloud-storage
 
-COPY configure-git-config.bash /usr/local/bin/configure-git-config.bash
-COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
-COPY git-config.bash /usr/local/bin/git-config.sh
+#COPY configure-git-config.bash /usr/local/bin/configure-git-config.bash
+#COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
+#COPY git-config.bash /usr/local/bin/git-config.sh
+
+# Install ssb-gitconfig.py script
+USER root
+RUN wget -O /usr/local/bin/ssb-gitconfig.py https://raw.githubusercontent.com/statisticsnorway/kvakk-git-tools/main/ssb-gitconfig/ssb-gitconfig.py
+RUN chmod +x /usr/local/bin/ssb-gitconfig.py
+
 COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
 COPY restart-ssh-agent.bash /usr/local/bin/restart-ssh-agent.sh
 
@@ -253,8 +259,7 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 
 # Python vulnerability scan
 RUN pip install safety
-RUN trap "safety check --json -o safety_results.json" EXIT
-RUN cat safety_results.json
+RUN safety check --full-report
 
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
