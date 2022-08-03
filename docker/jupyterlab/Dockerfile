@@ -1,6 +1,6 @@
 # Image contains Spark 3.x
 # jupyter/pyspark-notebook includes Python support for Apache Spark and pyarrow library
-FROM jupyter/pyspark-notebook:spark-3.2.1 AS ssb-r-packages
+FROM jupyter/pyspark-notebook:spark-3.3.0 AS ssb-r-packages
 
 # Must match https://github.com/jupyter/docker-stacks/blob/master/pyspark-notebook/Dockerfile#L20
 ARG openjdk_version="11"
