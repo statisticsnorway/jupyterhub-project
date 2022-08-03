@@ -63,7 +63,7 @@ ENTRYPOINT [ "/opt/entrypoint.sh" ]
 RUN pip3 install numpy
 # Python vuln check, and remove package afterwards
 RUN pip install safety
-RUN trap "safety check" EXIT
+RUN safety check --full-report
 RUN pip uninstall -y safety && \
     pip cache purge
 
