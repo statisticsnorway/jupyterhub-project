@@ -27,11 +27,12 @@ def get_local_ip():
 def generate_k8s_pod_name_prefix():
     prefix = f"{os.environ['HOSTNAME']}-{str(time.time_ns())}"
     # Max length of pod name in k8s is 63 chars
-    # Spark executors are named by the prefix + exec-nn
+    # Spark executors are named by the prefix + executor-nn
     # Where nn are number of executors (1-20)
-    maxlength = len(f"{prefix}-exec-nn")
-    if maxlength > 63:
-        return prefix[maxlength-63:]
+    # Since Spark 3.3.0 there is a hardcoded limit of 47
+    length = len(prefix)
+    if length > 47:
+        return prefix[length-47:]
     return prefix
 
 # This is similar to /pyspark/shell.py
