@@ -32,11 +32,11 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Install latest Spark version
-RUN wget https://apache.uib.no/spark/spark-3.3.0/spark-3.3.0-bin-hadoop3.2.tgz && \
-    tar -zxpf spark-3.3.0-bin-hadoop3.2.tgz -C /tmp && \
-    mv /tmp/spark-3.3.0-bin-hadoop3.2 ${SPARK_HOME} && \
-    rm -rf /tmp/spark-3.3.0-bin-hadoop3.2 && \
-    rm spark-3.3.0-bin-hadoop3.2.tgz
+RUN wget https://apache.uib.no/spark/spark-3.3.0/spark-3.3.0-bin-hadoop3.tgz && \
+    tar -zxpf spark-3.3.0-bin-hadoop3.tgz -C /tmp && \
+    mv /tmp/spark-3.3.0-bin-hadoop3 ${SPARK_HOME} && \
+    rm -rf /tmp/spark-3.3.0-bin-hadoop3 && \
+    rm spark-3.3.0-bin-hadoop3.tgz
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
 # Python 3.x is not available in the standard Debian 10 repositories, so
