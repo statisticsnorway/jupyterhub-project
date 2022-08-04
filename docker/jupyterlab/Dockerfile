@@ -1,6 +1,7 @@
+ARG spark_version="3.2.1"
 # Image contains Spark 3.x
 # jupyter/pyspark-notebook includes Python support for Apache Spark and pyarrow library
-FROM jupyter/pyspark-notebook:spark-3.2.1 AS ssb-r-packages
+FROM jupyter/pyspark-notebook:spark-${spark_version} AS ssb-r-packages
 
 # Must match https://github.com/jupyter/docker-stacks/blob/master/pyspark-notebook/Dockerfile#L20
 ARG openjdk_version="11"
@@ -189,7 +190,7 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install collapsible headers (for Jupyterlab >= 3.0) ****" && \
     python3 -m pip install aquirdturtle_collapsible_headings && \
     echo "**** install ipython extensions" && \
-    python3 -m pip install dapla-toolbelt==1.3.1 gcsfs==0.6.2 pyspark pyarrow google-cloud-storage
+    python3 -m pip install dapla-toolbelt==1.3.1 gcsfs==0.6.2 pyspark==${spark_version} pyarrow google-cloud-storage
 
 #COPY configure-git-config.bash /usr/local/bin/configure-git-config.bash
 #COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
