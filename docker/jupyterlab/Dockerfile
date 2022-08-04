@@ -140,6 +140,7 @@ RUN echo "**** install jupyterlab-git ****" && \
     jupyter lab clean
 
 FROM ssb-notebook-image
+ARG spark_version="3.2.1"
 
 RUN jupyter lab build --dev-build=False && \
     python3 -m pip install --upgrade jupyterhub && \
