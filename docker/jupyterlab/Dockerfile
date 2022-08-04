@@ -10,7 +10,7 @@ USER root
 # Should be installed into /usr/lib/R/site-library
 RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends "openjdk-${openjdk_version}-jdk-headless" \
-		software-properties-common dirmngr build-essential curl libssl-dev libcurl4-openssl-dev libgdal-dev \
+		software-properties-common dirmngr build-essential curl libssl-dev libcurl4-openssl-dev libgdal-dev libudunits2-dev \
     # add the signing key (by Michael Rutter) for these repos
     # To verify key, run gpg --show-keys /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
     # Fingerprint: 298A3A825C0D65DFD57CBB651716619E084DAB9
