@@ -10,7 +10,7 @@ USER root
 # Should be installed into /usr/lib/R/site-library
 RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends "openjdk-${openjdk_version}-jdk-headless" \
-		software-properties-common dirmngr build-essential curl libssl-dev libcurl4-openssl-dev libgdal-dev libre2-dev apt-utils \
+		software-properties-common dirmngr build-essential curl libssl-dev libcurl4-openssl-dev libgdal-dev libre2-dev apt-utils libudunits2-dev \
     # add the signing key (by Michael Rutter) for these repos
     # To verify key, run gpg --show-keys /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
     # Fingerprint: 298A3A825C0D65DFD57CBB651716619E084DAB9
@@ -59,6 +59,9 @@ RUN R CMD javareconf -e && \
     R -e "install.packages('raster', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('leaflet', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('languageserver', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('sotkanet', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('ggiraph', dependencies=FALSE, repos='http://cran.rstudio.com/')" && \
+    R -e "library(rio); install_formats()" && \
     # Doesn t work with Java11 - use a custom one
     #curl --silent -L -o- https://github.com/jdemetra/jwsacruncher/releases/download/v2.2.3/jwsacruncher-2.2.3-bin.zip | bsdtar -xvf- -C /opt && \
     unzip /tmp/jwsacruncher-2.2.4.zip -d /opt && fix-permissions /opt/jwsacruncher-2.2.4 && rm -f /tmp/jwsacruncher-2.2.4.zip
