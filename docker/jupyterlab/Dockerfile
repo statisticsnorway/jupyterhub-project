@@ -10,7 +10,7 @@ USER root
 # Should be installed into /usr/lib/R/site-library
 RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends "openjdk-${openjdk_version}-jdk-headless" \
-		software-properties-common dirmngr build-essential curl libssl-dev libcurl4-openssl-dev libgdal-dev libudunits2-dev \
+		software-properties-common dirmngr build-essential curl libssl-dev libcurl4-openssl-dev libgdal-dev libre2-dev apt-utils libudunits2-dev \
     # add the signing key (by Michael Rutter) for these repos
     # To verify key, run gpg --show-keys /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
     # Fingerprint: 298A3A825C0D65DFD57CBB651716619E084DAB9
@@ -65,6 +65,10 @@ RUN R CMD javareconf -e && \
     # Doesn t work with Java11 - use a custom one
     #curl --silent -L -o- https://github.com/jdemetra/jwsacruncher/releases/download/v2.2.3/jwsacruncher-2.2.3-bin.zip | bsdtar -xvf- -C /opt && \
     unzip /tmp/jwsacruncher-2.2.4.zip -d /opt && fix-permissions /opt/jwsacruncher-2.2.4 && rm -f /tmp/jwsacruncher-2.2.4.zip
+
+# https://cran.r-project.org/web/packages/arrow/vignettes/install.html
+ENV NOT_CRAN true
+RUN R -e "install.packages('arrow', dependencies=FALSE, repos='https://cloud.r-project.org/')"
 
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
     R -e "remotes::install_github('statisticsnorway/Kostra')" && \
@@ -124,6 +128,8 @@ RUN echo "**** install jupyterlab-git ****" && \
     python3 -m pip install jupyterlab-system-monitor && \
     echo "**** install jupytext ****" && \
     python3 -m pip install jupytext && \
+    echo "**** install lckr-jupyterlab-variableinspector ****" && \
+    python3 -m pip install --upgrade lckr-jupyterlab-variableinspector && \
     #jupyter labextension install --no-build jupyterlab-jupytext && \
     echo "**** uninstall IPython Parallels (comes default with dockerhub image)  ****" && \
     python3 -m pip uninstall -y ipyparallel && \
@@ -183,11 +189,17 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install collapsible headers (for Jupyterlab >= 3.0) ****" && \
     python3 -m pip install aquirdturtle_collapsible_headings && \
     echo "**** install ipython extensions" && \
-    python3 -m pip install dapla-toolbelt==1.3.0 gcsfs==0.6.2 pyspark pyarrow google-cloud-storage
+    python3 -m pip install dapla-toolbelt==1.3.1 gcsfs==0.6.2 pyspark pyarrow google-cloud-storage
 
-COPY configure-git-config.bash /usr/local/bin/configure-git-config.bash
-COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
-COPY git-config.bash /usr/local/bin/git-config.sh
+#COPY configure-git-config.bash /usr/local/bin/configure-git-config.bash
+#COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
+#COPY git-config.bash /usr/local/bin/git-config.sh
+
+# Install ssb-gitconfig.py script
+USER root
+RUN wget -O /usr/local/bin/ssb-gitconfig.py https://raw.githubusercontent.com/statisticsnorway/kvakk-git-tools/main/ssb-gitconfig/ssb-gitconfig.py
+RUN chmod +x /usr/local/bin/ssb-gitconfig.py
+
 COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
 COPY restart-ssh-agent.bash /usr/local/bin/restart-ssh-agent.sh
 
@@ -250,13 +262,13 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 
 # Python vulnerability scan
 RUN pip install safety
-RUN trap "safety check --json -o safety_results.json" EXIT
-RUN echo safety_results.json
+RUN safety check --full-report
 
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
-COPY scan.R /tmp/
-RUN Rscript /tmp/scan.R
+# https://github.com/tidyverse/haven/issues/681
+#COPY scan.R /tmp/
+#RUN Rscript /tmp/scan.R
 
 RUN rm -rf /home/jovyan/.cache
 

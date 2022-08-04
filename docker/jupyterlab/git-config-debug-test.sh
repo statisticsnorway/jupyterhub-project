@@ -4,7 +4,7 @@ export GIT_CONFIG=/tmp/gitconfig
 export SSH_HOME=/tmp/ssh
 export SSH_CONFIG=/tmp/ssh/config
 
-. "$(dirname $BASH_SOURCE)/configure-git-config.bash"
+#. "$(dirname $BASH_SOURCE)/configure-git-config.bash"
 . "$(dirname $BASH_SOURCE)/configure-git-ssh-config.bash"
 
 cat <<EOF
@@ -25,7 +25,7 @@ cat <<EOF
 
 EOF
 
-createGitConfig
+#createGitConfig
 createSSHConfig
 
 if [[ "$GIT_CONFIG_SUCCESSFUL" == true || "$SSH_CONFIG_SUCCESSFUL" == true ]]; then

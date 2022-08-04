@@ -32,24 +32,24 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Install latest Spark version
-RUN wget https://apache.uib.no/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz && \
-    tar -zxpf spark-3.2.1-bin-hadoop3.2.tgz -C /tmp && \
-    mv /tmp/spark-3.2.1-bin-hadoop3.2 ${SPARK_HOME} && \
-    rm -rf /tmp/spark-3.2.1-bin-hadoop3.2 && \
-    rm spark-3.2.1-bin-hadoop3.2.tgz
+RUN wget https://apache.uib.no/spark/spark-3.2.2/spark-3.2.2-bin-hadoop3.2.tgz && \
+    tar -zxpf spark-3.2.2-bin-hadoop3.2.tgz -C /tmp && \
+    mv /tmp/spark-3.2.2-bin-hadoop3.2 ${SPARK_HOME} && \
+    rm -rf /tmp/spark-3.2.2-bin-hadoop3.2 && \
+    rm spark-3.2.2-bin-hadoop3.2.tgz
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
 # Python 3.x is not available in the standard Debian 10 repositories, so
 # it must be built from source
-RUN wget -O Python-3.9.7.tar.xz https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tar.xz && \
-    tar -xf Python-3.9.7.tar.xz && \
-    rm Python-3.9.7.tar.xz
+RUN wget -O Python-3.10.4.tar.xz https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tar.xz && \
+    tar -xf Python-3.10.4.tar.xz && \
+    rm Python-3.10.4.tar.xz
 
-RUN cd Python-3.9.7 && \
+RUN cd Python-3.10.4 && \
     ./configure --enable-optimizations && \
     make -j 4 && \
     make install && \
-    rm -rf Python-3.9.7
+    rm -rf Python-3.10.4
 
 COPY entrypoint.sh /opt/
 COPY decom.sh /opt/
@@ -63,7 +63,7 @@ ENTRYPOINT [ "/opt/entrypoint.sh" ]
 RUN pip3 install numpy
 # Python vuln check, and remove package afterwards
 RUN pip install safety
-RUN trap "safety check" EXIT
+RUN safety check --full-report
 RUN pip uninstall -y safety && \
     pip cache purge
 
