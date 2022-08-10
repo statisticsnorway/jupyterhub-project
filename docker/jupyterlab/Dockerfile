@@ -216,30 +216,6 @@ COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-
 # Copy Apache Spark Avro connector
 COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
 
-# Install dapla cli:
-# - Install bash-completion
-# - Download latest release from github.
-# - Setup autocompletion
-# - Add aliases
-# - Install jq, which is needed for the former
-USER root
-RUN apt update && \
-    apt-get -y clean all && \
-    apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get -y dist-upgrade && \
-    apt-get install -y --no-install-recommends \
-        bash-completion jq iputils-ping traceroute && \
-    rm -rf /var/lib/apt/lists/*
-RUN mkdir /opt/dapla/ && curl --silent -L -o- https://github.com/statisticsnorway/dapla-cli/releases/download/0.1.2/dapla-cli-0.1.2-linux-amd64.tar.gz \
-   | tar xvz -C /opt/dapla
-RUN chmod +x /opt/dapla/dapla-cli
-COPY dapla-cli.yml /opt/dapla/.dapla-cli.yml
-RUN /opt/dapla/dapla-cli completion bash > /etc/bash_completion.d/dapla && \
-    echo "alias dapla='/opt/dapla/dapla-cli --config /opt/dapla/.dapla-cli.yml'" >> /etc/bash.bashrc && \
-    echo "alias lsd='dapla ls'" >> /etc/bash.bashrc && \
-    echo "alias rmd='dapla rm'" >> /etc/bash.bashrc
-
 # Install pipenv-kernel and delete-pipenv-kernel:
 # - Copy in scripts
 # - Add aliases
