@@ -69,6 +69,7 @@ RUN R CMD javareconf -e && \
 
 # https://cran.r-project.org/web/packages/arrow/vignettes/install.html
 ENV NOT_CRAN true
+ENV ARROW_GCS=ON
 RUN R -e "install.packages('arrow', dependencies=FALSE, repos='https://cloud.r-project.org/')"
 
 RUN R -e "remotes::install_github('r-barnes/dggridR', vignette=TRUE)" && \
