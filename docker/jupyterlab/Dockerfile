@@ -245,7 +245,7 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 
 # Python vulnerability scan
 RUN pip install safety
-RUN safety check --full-report
+RUN safety check --full-report --ignore=45114
 
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
