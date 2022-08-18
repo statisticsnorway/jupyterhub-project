@@ -196,7 +196,7 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install collapsible headers (for Jupyterlab >= 3.0) ****" && \
     python3 -m pip install aquirdturtle_collapsible_headings && \
     echo "**** install ipython extensions" && \
-    python3 -m pip install dapla-toolbelt==1.3.1 gcsfs==0.6.2 pyspark==${spark_version} pyarrow google-cloud-storage
+    python3 -m pip install dapla-toolbelt==1.3.1 gcsfs==0.6.2 pyspark==${spark_version} pyarrow google-cloud-storage dask-kubernetes
 
 #COPY configure-git-config.bash /usr/local/bin/configure-git-config.bash
 #COPY configure-git-ssh-config.bash /usr/local/bin/configure-git-ssh-config.bash
