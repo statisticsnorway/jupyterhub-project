@@ -56,6 +56,7 @@ COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-
 # Copy Apache Spark Avro connector
 COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
 
+USER root
 # Install pipenv-kernel and delete-pipenv-kernel:
 # - Copy in scripts
 # - Add aliases
