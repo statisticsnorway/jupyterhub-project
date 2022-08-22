@@ -1,4 +1,4 @@
-FROM eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common
+FROM eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest
 
 ARG spark_version="3.2.1"
 
