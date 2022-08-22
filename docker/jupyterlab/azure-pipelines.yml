@@ -56,10 +56,6 @@ variables:
     value: 'imagescan-$(Build.SourceBranchName)-$(Build.SourceVersion)'
   - name: imageTagAfterVulnerabilityScan
     value: '$(Build.SourceBranchName)-$(Build.SourceVersion)'
-  - name: imageBuilderLatest
-    value: '$(Build.SourceBranchName)-builder-latest'
-  - name: imageNotebookLatest
-    value: '$(Build.SourceBranchName)-notebook-latest'
   - name: imageTagLatest
     value: '$(Build.SourceBranchName)-latest'
   - name: timeBetweenRetriesVulnerabilityScan
@@ -141,90 +137,17 @@ jobs:
 
       - script: |
           cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
-          docker pull ${{ variables.imageName }}:${{ variables.imageBuilderLatest }}
-        displayName: Pull latest for layer caching
-        continueOnError: true # for first build, no cache
-
-      # Build Docker build image with cache
-      - task: Docker@2
-        displayName: 'Build ssb-r-packages'
-        inputs:
-          repository: ${{ variables.repoName }}
-          command: 'build'
-          Dockerfile: 'docker/jupyterlab/Dockerfile'
-          arguments: '--target ssb-r-packages --cache-from=${{ variables.imageName }}:${{ variables.imageBuilderLatest }}'
-          tags: |
-            ${{ variables.imageBuilderLatest }}
-
-      # Push Docker build image to GCR
-      - task: Docker@2
-        displayName: 'Push ssb-r-packages'
-        inputs:
-          ContainerRegistry: |
-            gcrServiceConnection
-          repository: ${{ variables.repoName }}
-          command: 'push'
-          tags: |
-            ${{ variables.imageBuilderLatest }}
-
-      - script: |
-          cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
           docker images | grep none | awk '{ print $3; }' | xargs docker rmi
         displayName: Remove dangling docker images
         continueOnError: true # for first build, no cache
 
-      - script: |
-          cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
-          docker pull ${{ variables.imageName }}:${{ variables.imageNotebookLatest }}
-        displayName: Pull latest for layer caching
-        continueOnError: true # for first build, no cache
-
-      # Build Docker notebook image with cache
-      - task: Docker@2
-        displayName: 'Build ssb-notebook-image'
-        inputs:
-          repository: ${{ variables.repoName }}
-          command: 'build'
-          Dockerfile: 'docker/jupyterlab/Dockerfile'
-          arguments: '--target ssb-notebook-image
-                      --cache-from=${{ variables.imageName }}:${{ variables.imageBuilderLatest }}
-                      --cache-from=${{ variables.imageName }}:${{ variables.imageNotebookLatest }}'
-          tags: |
-            ${{ variables.imageNotebookLatest }}
-
-      # Push Docker notebook image to GCR
-      - task: Docker@2
-        displayName: 'Push ssb-notebook-image'
-        inputs:
-          ContainerRegistry: |
-            gcrServiceConnection
-          repository: ${{ variables.repoName }}
-          command: 'push'
-          tags: |
-            ${{ variables.imageNotebookLatest }}
-
-      - script: |
-          cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
-          docker pull ${{ variables.imageName }}:${{ variables.imageTagLatest }}
-        displayName: Pull latest for layer caching
-        continueOnError: true # for first build, no cache
-
-      - script: |
-          cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
-          docker images | grep none | awk '{ print $3; }' | xargs docker rmi
-        displayName: Remove dangling docker images
-        continueOnError: true # for first build, no cache
-
-      # Build Docker final image with cache
+      # Build Docker final image
       - task: Docker@2
         displayName: 'Build final image'
         inputs:
           repository: ${{ variables.repoName }}
           command: 'build'
           Dockerfile: 'docker/jupyterlab/Dockerfile'
-          arguments: '--cache-from=${{ variables.imageName }}:${{ variables.imageBuilderLatest }}
-                      --cache-from=${{ variables.imageName }}:${{ variables.imageNotebookLatest }}
-                      --cache-from=${{ variables.imageName }}:${{ variables.imageTagLatest }}'
           tags: |
             ${{ variables.imageTagLatest }}
             ${{ variables.imageTagBeforeVulnerabilityScan }}
