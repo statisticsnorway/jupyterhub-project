@@ -1,4 +1,4 @@
-ARG spark_version="3.2.2"
+ARG spark_version="3.2.1"
 # Image contains Spark 3.x
 # jupyter/pyspark-notebook includes Python support for Apache Spark and pyarrow library
 FROM jupyter/pyspark-notebook:spark-${spark_version} AS ssb-r-packages
@@ -141,7 +141,7 @@ RUN echo "**** install jupyterlab-git ****" && \
     jupyter lab clean
 
 FROM ssb-notebook-image
-ARG spark_version="3.2.2"
+ARG spark_version="3.2.1"
 
 RUN jupyter lab build --dev-build=False && \
     python3 -m pip install --upgrade jupyterhub && \
