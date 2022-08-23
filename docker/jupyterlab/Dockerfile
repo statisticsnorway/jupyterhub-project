@@ -17,6 +17,7 @@ COPY spark-defaults.conf /tmp/spark-defaults.conf
 USER root
 RUN chown -R $NB_UID /usr/local/share/jupyter/kernels
 RUN chown -R $NB_UID /opt/conda/share/jupyter/kernels
+RUN chown -R $NB_UID /usr/local/spark/conf/spark-defaults.conf
 
 USER $NB_UID
 
