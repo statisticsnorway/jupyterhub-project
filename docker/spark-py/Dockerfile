@@ -1,5 +1,6 @@
 # This Dockerfile is inspired by
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
+ARG spark_version="3.2.1"
 
 # Use base image that has the same JRE as jupyter/all-spark-notebook
 FROM adoptopenjdk/openjdk11:jre-11.0.9.1_1-ubuntu
@@ -32,11 +33,11 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Install latest Spark version
-RUN wget https://apache.uib.no/spark/spark-3.2.2/spark-3.2.2-bin-hadoop3.2.tgz && \
-    tar -zxpf spark-3.2.2-bin-hadoop3.2.tgz -C /tmp && \
-    mv /tmp/spark-3.2.2-bin-hadoop3.2 ${SPARK_HOME} && \
-    rm -rf /tmp/spark-3.2.2-bin-hadoop3.2 && \
-    rm spark-3.2.2-bin-hadoop3.2.tgz
+RUN wget https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop3.2.tgz && \
+    tar -zxpf spark-${spark_version}-bin-hadoop3.2.tgz -C /tmp && \
+    mv /tmp/spark-${spark_version}-bin-hadoop3.2 ${SPARK_HOME} && \
+    rm -rf /tmp/spark-${spark_version}-bin-hadoop3.2 && \
+    rm spark-${spark_version}-bin-hadoop3.2.tgz
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
 # Python 3.x is not available in the standard Debian 10 repositories, so
