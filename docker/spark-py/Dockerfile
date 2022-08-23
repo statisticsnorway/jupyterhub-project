@@ -1,7 +1,5 @@
 # This Dockerfile is inspired by
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
-ARG spark_version="3.2.1"
-
 # Use base image that has the same JRE as jupyter/all-spark-notebook
 FROM adoptopenjdk/openjdk11:jre-11.0.9.1_1-ubuntu
 WORKDIR /
@@ -10,6 +8,7 @@ WORKDIR /
 USER root
 
 ENV SPARK_HOME /opt/spark
+ARG spark_version="3.2.1"
 
 RUN set -ex && \
     sed -i 's/http:\/\/deb.\(.*\)/https:\/\/deb.\1/g' /etc/apt/sources.list && \
