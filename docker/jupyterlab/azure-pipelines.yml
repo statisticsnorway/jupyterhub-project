@@ -29,6 +29,11 @@ resources:
       ref: refs/tags/1.1.27
       endpoint: statisticsnorway
 
+  pipelines:
+    - pipeline: jupyterlab-common
+      source: statisticsnorway.jupyterlab-common
+      trigger: true # Run this pipeline when any run of jupyterlab-common completes
+
     # Pipeline will be run on this base image
 pool:
   name: 'extended_storage'
