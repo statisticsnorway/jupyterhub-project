@@ -29,10 +29,14 @@ resources:
       ref: refs/tags/1.1.27
       endpoint: statisticsnorway
 
+  # Run this pipeline when any run of the main branch in jupyterlab-common completes
   pipelines:
     - pipeline: jupyterlab-common
-      source: statisticsnorway.jupyterlab-common
-      trigger: true # Run this pipeline when any run of jupyterlab-common completes
+      source: jupyterlab-common
+      trigger:
+        branches:
+          include:
+          - 'main'
 
     # Pipeline will be run on this base image
 pool:
