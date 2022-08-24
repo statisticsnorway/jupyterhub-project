@@ -32,7 +32,7 @@ resources:
   # Run this pipeline when any run of the main branch in jupyterlab-common completes
   pipelines:
     - pipeline: jupyterlabCommonPipeline
-      source: jupyterlab-common
+      source: statisticsnorway.jupyterlab-common
       trigger:
         branches:
           include:
