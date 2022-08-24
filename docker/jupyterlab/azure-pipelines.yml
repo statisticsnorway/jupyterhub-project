@@ -31,7 +31,7 @@ resources:
 
   # Run this pipeline when any run of the main branch in jupyterlab-common completes
   pipelines:
-    - pipeline: jupyterlab-common
+    - pipeline: jupyterlabCommonPipeline
       source: jupyterlab-common
       trigger:
         branches:
