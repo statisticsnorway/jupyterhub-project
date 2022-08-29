@@ -7,3 +7,5 @@ c.MappingKernelManager.cull_idle_timeout = 30 * 60
 c.MappingKernelManager.cull_interval = 2 * 60
 
 c.Application.log_level = 'WARN'
+# Allow deleting non-empty directories from the file browser
+c.FileContentsManager.always_delete_dir = True
