@@ -41,7 +41,7 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
     echo "**** install ipython extensions" && \
-    python3 -m pip install dapla-toolbelt==1.3.1 gcsfs==0.6.2 pyspark==${spark_version} pyarrow google-cloud-storage && \
+    python3 -m pip install dapla-toolbelt==1.3.2 gcsfs==0.6.2 pyspark==${spark_version} pyarrow google-cloud-storage && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
     
