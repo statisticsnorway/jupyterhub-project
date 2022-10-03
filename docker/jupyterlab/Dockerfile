@@ -122,9 +122,12 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 #COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
 #RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
 
-# Python vulnerability scan
+# Python vuln check, and remove package afterwards
 RUN pip install safety
-RUN safety check --full-report
+RUN safety check --full-report -i 49913 -i 50463 -i 50664
+RUN pip uninstall -y safety && \
+    rm -rf /home/jovyan/.cache
+
 
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
