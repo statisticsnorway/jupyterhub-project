@@ -2,7 +2,7 @@
 
 echo "Replacing environment variables"
 
-perl -pe 's/\$([_A-Z]+)/$ENV{$1}/g' </tmp/spark-defaults.conf >/usr/local/spark/conf/spark-defaults.conf
+perl -pe 's/\$([_A-Z]+)/$ENV{$1}/g' </tmp/spark-defaults.conf >> /usr/local/spark/conf/spark-defaults.conf
 
 # Copy .bashrc and .profile if it doesn't already exist on mounted home volume
 if [ ! -f "$HOME/.bashrc" ]; then
