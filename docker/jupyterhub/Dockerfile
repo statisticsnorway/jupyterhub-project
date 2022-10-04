@@ -8,7 +8,8 @@ RUN apt update && \
     apt-get -y clean all && \
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get -y dist-upgrade
+    apt-get -y dist-upgrade && \
+    apt-get -y remove vim
 
 RUN pip install tokenexchangeauthenticator==0.3.0  && \
     pip install --upgrade jupyterhub-kubespawner
