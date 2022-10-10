@@ -79,11 +79,13 @@ RUN echo "**** install ssb_spark_tools ****" && \
     python3 -m pip install sphinx sphinx-autodoc-defaultargs sphinx-autodoc-typehints sphinx-rtd-theme && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
-    echo "**** install ipython extensions" && \
-    python3 -m pip install dapla-toolbelt==1.3.3 ssb-datadoc[gcs]==0.1.8 pyspark==${spark_version} pyarrow google-cloud-storage && \
+    echo "**** install Dapla tools" && \
+    python3 -m pip install dapla-toolbelt==1.3.3 ssb-datadoc[gcs]>=0.2.1 ssb-project-cli>=1.0.2 && \
+    echo "**** install pyspark, pyarrow, gcs libraries" && \
+    python3 -m pip install pyspark==${spark_version} pyarrow google-cloud-storage && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
-    
+
 
 COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
 COPY restart-ssh-agent.bash /usr/local/bin/restart-ssh-agent.sh
