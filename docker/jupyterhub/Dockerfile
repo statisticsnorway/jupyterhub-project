@@ -11,7 +11,7 @@ RUN apt update && \
     apt-get -y dist-upgrade && \
     apt-get -y remove --auto-remove vim
 
-RUN pip install tokenexchangeauthenticator==0.3.0  && \
+RUN pip install tokenexchangeauthenticator==0.3.1  && \
     pip install --upgrade jupyterhub-kubespawner
 
 USER jovyan
