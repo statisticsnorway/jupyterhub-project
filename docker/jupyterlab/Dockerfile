@@ -107,10 +107,7 @@ USER root
 # - Add aliases
 COPY pipenv_kernel.bash /opt/dapla/pipenv_kernel.sh
 RUN chmod +x /opt/dapla/pipenv_kernel.sh && \
-    echo "alias pipenv-kernel='/opt/dapla/pipenv_kernel.sh'" >> /etc/bash.bashrc && \
-    echo 'export PIP_INDEX="http://jupyter:$PYPISERVER_PASSWORD@dapla-pypiserver.dapla.svc.cluster.local"' >> /etc/bash.bashrc && \
-    echo 'export PIP_INDEX_URL="$PIP_INDEX"' >> /etc/bash.bashrc && \
-    echo 'export PIPENV_PYPI_MIRROR="$PIP_INDEX"' >> /etc/bash.bashrc
+    echo "alias pipenv-kernel='/opt/dapla/pipenv_kernel.sh'" >> /etc/bash.bashrc
 
 # Virtual environments should be stored in the container, so that they don't fill the 2G storage of the home dir.
 ENV WORKON_HOME="/virtualenvs"
