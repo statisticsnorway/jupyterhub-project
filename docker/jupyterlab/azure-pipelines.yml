@@ -135,6 +135,12 @@ jobs:
         inputs:
           secureFile: 'gcr-key.json'
 
+      - script: |
+           cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
+           docker images | grep none | awk '{ print $3; }' | xargs docker rmi
+         displayName: Remove dangling docker images
+         continueOnError: true # for first build, no cache
+
       # Build Docker final image
       - task: Docker@2
         displayName: 'Build final image'
