@@ -137,7 +137,7 @@ jobs:
 
       - script: |
           cat $(gcrJsonKey.secureFilePath) | docker login -u _json_key --password-stdin ${{ variables.imageHost }}
-          docker images | grep none | awk '{ print $3; }' | xargs docker rmi
+          docker rmi -f $(docker images | grep "<none>" | awk "{print \$3}")
         displayName: Remove dangling docker images
         continueOnError: true # for first build, no cache
 
