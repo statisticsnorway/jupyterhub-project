@@ -12,7 +12,7 @@
   "env": {
     "SPARK_HOME": "/usr/local/spark",
     "SPARKR_SUBMIT_ARGS": "${SPARKR_LOCAL_SUBMIT_ARGS}",
-    "R_PROFILE_USER" : "/opt/conda/share/jupyter/kernels/ir_spark/Rstartup",
+    "R_PROFILE_USER" : "/opt/conda/share/jupyter/kernels/ir/Rstartup",
     "R_LIBS_USER": "/usr/lib/R/library"
   }
 }
