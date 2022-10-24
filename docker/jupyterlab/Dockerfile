@@ -138,6 +138,6 @@ RUN pip uninstall -y safety && \
 RUN rm -rf /home/jovyan/.cache
 
 # User will not be able to install packages outside of a virtual environment
-RUN echo export PIP_REQUIRE_VIRTUALENV=true >> $HOME/.bashrc
+ENV PIP_REQUIRE_VIRTUALENV=true
 
 USER $NB_UID
