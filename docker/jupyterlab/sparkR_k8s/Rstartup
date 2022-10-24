@@ -7,10 +7,7 @@
   old <- getOption("defaultPackages")
   options(defaultPackages = c(old, "SparkR"))
 
-  r <- getOption("repos")
-  r["CRAN"] <- "https://cran.uib.no/"
-  options(repos = r)
-  rm(r)
+  options(repos = c(RSTUDIO = "https://packagemanager.rstudio.com/all/latest", CRAN_UIB = "https://cran.uib.no"))
 
   library(utils)
   get_local_ip <- function() {
