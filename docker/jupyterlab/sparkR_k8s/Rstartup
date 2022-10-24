@@ -8,7 +8,7 @@
   options(defaultPackages = c(old, "SparkR"))
 
   r <- getOption("repos")
-  r["CRAN"] <- "https://cran.uib.no/"
+  r["CRAN"] <- "https://packagemanager.rstudio.com/all/latest"
   options(repos = r)
   rm(r)
 
