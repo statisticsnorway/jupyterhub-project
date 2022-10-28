@@ -61,7 +61,6 @@ jobs:
     steps:
       - template: docker/docker-build-image-and-push-to-gcr.yml@templates
         parameters:
-          project: dapla
           imageName: $(imageName)
           repoName: $(repoName)
           Dockerfile: 'docker/jupyterhub/Dockerfile'
