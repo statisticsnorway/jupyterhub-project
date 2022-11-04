@@ -14,5 +14,9 @@ RUN apt update && \
 RUN pip install tokenexchangeauthenticator==0.3.4  && \
     pip install --upgrade jupyterhub-kubespawner
 
+# Set localtime to Europe/Oslo
+RUN rm -f /etc/localtime && \
+    ln -s /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+
 USER jovyan
 

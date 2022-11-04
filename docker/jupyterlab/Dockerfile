@@ -56,6 +56,7 @@ COPY spark-defaults.conf /tmp/spark-defaults.conf
 RUN chown -R $NB_UID /usr/local/share/jupyter/kernels
 RUN chown -R $NB_UID /opt/conda/share/jupyter/kernels
 RUN chown -R $NB_UID /usr/local/spark/conf/spark-defaults.conf
+RUN chown -R $NB_UID /home/jovyan/.cache
 
 USER $NB_UID
 
@@ -135,5 +136,8 @@ RUN pip uninstall -y safety && \
 #RUN Rscript /tmp/scan.R
 
 RUN rm -rf /home/jovyan/.cache
+
+# User will not be able to install packages outside of a virtual environment
+ENV PIP_REQUIRE_VIRTUALENV=true
 
 USER $NB_UID
