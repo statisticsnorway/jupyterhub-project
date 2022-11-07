@@ -56,7 +56,6 @@ COPY spark-defaults.conf /tmp/spark-defaults.conf
 RUN chown -R $NB_UID /usr/local/share/jupyter/kernels
 RUN chown -R $NB_UID /opt/conda/share/jupyter/kernels
 RUN chown -R $NB_UID /usr/local/spark/conf/spark-defaults.conf
-RUN chown -R $NB_UID /home/jovyan/.cache
 
 USER $NB_UID
 
@@ -81,7 +80,7 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
     echo "**** install Dapla tools" && \
-    python3 -m pip install dapla-toolbelt==1.3.5 ssb-datadoc[gcs]==0.2.2 ssb-project-cli==1.0.4 && \
+    python3 -m pip install dapla-toolbelt==1.3.5 ssb-datadoc[gcs]==0.2.2 ssb-project-cli==1.0.5 && \
     echo "**** install pyspark, pyarrow, gcs libraries" && \
     python3 -m pip install pyspark==${spark_version} pyarrow google-cloud-storage && \
     python3 -m pip cache purge && \
