@@ -60,12 +60,6 @@ RUN chown -R $NB_UID /usr/local/spark/conf/spark-defaults.conf
 USER $NB_UID
 
 WORKDIR "${HOME}"
-# Experimental libraries
-# nbdev uses nbconvert 5.6.1
-# voila 0.2.7 requires nbconvert<7,>=6.0.0, but you have nbconvert 5.6.1 which is incompatible.
-# https://github.com/fastai/nbdev/issues/305
-#RUN echo "**** install nbdev ****" && \
-# python3 -m pip install nbdev
 
 # pipenv is used for keeping track of and loading the specific package dependencies of each repository
 # Together with with envkernel Jupyter users can create Jupyter kernels with a different environment.
@@ -83,6 +77,8 @@ RUN echo "**** install ssb_spark_tools ****" && \
     python3 -m pip install dapla-toolbelt==1.3.5 ssb-datadoc[gcs]==0.2.2 ssb-project-cli==1.0.7 && \
     echo "**** install pyspark, pyarrow, gcs libraries" && \
     python3 -m pip install pyspark==${spark_version} pyarrow google-cloud-storage && \
+    echo "**** install nbdev ****" && \
+    python3 -m pip install nbdev
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
