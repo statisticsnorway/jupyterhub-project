@@ -78,7 +78,7 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install pyspark, pyarrow, gcs libraries" && \
     python3 -m pip install pyspark==${spark_version} pyarrow google-cloud-storage && \
     echo "**** install nbdev ****" && \
-    python3 -m pip install nbdev
+    python3 -m pip install nbdev && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
