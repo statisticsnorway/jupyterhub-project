@@ -2,7 +2,7 @@
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
 
 # Use base image that has the same JRE as jupyter/all-spark-notebook
-FROM eclipse-temurin:11.0.13_8-jre-focal AS prod
+FROM eclipse-temurin:11-jre-focal AS prod
 WORKDIR /
 
 # Reset to root to run installation tasks
@@ -42,11 +42,11 @@ ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
 RUN \
-  echo "deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/" >> /etc/apt/sources.list && \
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
-  apt-get update && \
-  apt install -y -t focal-cran40 r-base r-base-dev r-base-core r-recommended && \
-  rm -rf /var/cache/apt/*
+    echo "deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/" >> /etc/apt/sources.list && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
+    apt-get update && \
+    apt install -y -t focal-cran40 r-base r-base-dev r-base-core r-recommended && \
+    rm -rf /var/cache/apt/*
 
 ENV R_HOME /usr/lib/R
 

@@ -1,7 +1,7 @@
 # This Dockerfile is inspired by
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
-# Use base image that has the same JRE as jupyter/all-spark-notebook
-FROM adoptopenjdk/openjdk11:jre-11.0.9.1_1-ubuntu
+
+FROM adoptopenjdk/openjdk11:jre
 WORKDIR /
 
 # Reset to root to run installation tasks
@@ -20,6 +20,8 @@ RUN set -ex && \
     apt-get -y dist-upgrade && \
     apt install -y python3 python3-pip && \
     pip3 install --upgrade pip setuptools && \
+    echo "Wheel 0.38.1 fixes a potential DoS attack via the 'WHEEL_INFO_RE' regular expression." && \
+    pip3 install wheel==0.38.1 && \
     apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
     libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \

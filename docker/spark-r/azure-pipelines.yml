@@ -24,7 +24,6 @@ resources:
     - repository: templates
       type: github
       name: statisticsnorway/azure-pipelines-templates
-      ref: refs/tags/1.1.28
       endpoint: statisticsnorway
 
     # Pipeline will be run on this base image
@@ -72,6 +71,7 @@ jobs:
           repoName: $(repoName)
           Dockerfile: 'docker/spark-r/Dockerfile'
           buildArguments: '--target prod'
+          skipImageVulnerabilityScan: 'true'
 
       # Need to tag 'latest' image (used by docker-tag-for-production)
       - script: |
