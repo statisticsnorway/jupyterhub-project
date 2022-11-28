@@ -20,6 +20,7 @@ RUN set -ex && \
     apt-get -y dist-upgrade && \
     apt install -y python3 python3-pip && \
     pip3 install --upgrade pip setuptools && \
+    echo "Wheel 0.38.1 fixes a potential DoS attack via the 'WHEEL_INFO_RE' regular expression." && \
     pip3 install wheel==0.38.1 && \
     apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
     libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
