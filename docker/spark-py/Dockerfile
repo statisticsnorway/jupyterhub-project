@@ -20,6 +20,7 @@ RUN set -ex && \
     apt-get -y dist-upgrade && \
     apt install -y python3 python3-pip && \
     pip3 install --upgrade pip setuptools && \
+    pip3 install --upgrade wheel && \
     apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
     libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
