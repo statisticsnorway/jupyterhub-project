@@ -65,6 +65,7 @@ jobs:
           imageName: $(imageName)
           repoName: $(repoName)
           Dockerfile: 'docker/spark-py/Dockerfile'
+          skipImageVulnerabilityScan: 'true'
 
       # Need to tag 'latest' image (used by docker-tag-for-production)
       - script: |
