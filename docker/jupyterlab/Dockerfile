@@ -73,7 +73,7 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
     echo "**** install Dapla tools" && \
-    python3 -m pip install dapla-toolbelt==1.3.5 ssb-datadoc[gcs]==0.2.2 ssb-project-cli==1.0.8 && \
+    python3 -m pip install dapla-toolbelt==1.3.5 ssb-datadoc[gcs]==0.2.2 ssb-project-cli==1.0.9 && \
     echo "**** install pyspark, pyarrow, gcs libraries" && \
     python3 -m pip install pyspark==${spark_version} pyarrow google-cloud-storage && \
     echo "**** install nbdev ****" && \
