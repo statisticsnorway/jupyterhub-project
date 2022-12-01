@@ -21,7 +21,7 @@ RUN set -ex && \
     apt install -y python3 python3-pip && \
     pip3 install --upgrade pip setuptools && \
     echo "Wheel 0.38.1 fixes a potential DoS attack via the 'WHEEL_INFO_RE' regular expression." && \
-    pip3 install wheel==0.38.1 && \
+    pip3 install wheel==0.38.1 pandas numpy && \
     apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
     libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
@@ -47,10 +47,13 @@ RUN wget -O Python-3.10.4.tar.xz https://www.python.org/ftp/python/3.10.4/Python
     tar -xf Python-3.10.4.tar.xz && \
     rm Python-3.10.4.tar.xz
 
+# Make a symlink to /opt/conda/bin/python3 to mirror python location on jupyterlab
 RUN cd Python-3.10.4 && \
     ./configure --enable-optimizations && \
     make -j 4 && \
     make install && \
+    mkdir -p /opt/conda/bin && \
+    ln -s /usr/local/bin/python3 /opt/conda/bin/python3 && \
     rm -rf Python-3.10.4
 
 COPY entrypoint.sh /opt/
