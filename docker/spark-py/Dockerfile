@@ -1,9 +1,10 @@
 # This Dockerfile is inspired by
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
 
-ARG java_image_tag=17-jre
+# Use base image that has the same JRE as jupyter/all-spark-notebook
+FROM eclipse-temurin:11-jre-focal AS prod
 
-FROM eclipse-temurin:${java_image_tag}
+WORKDIR /
 
 # Reset to root to run installation tasks
 USER root
