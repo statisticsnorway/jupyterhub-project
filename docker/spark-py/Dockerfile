@@ -58,7 +58,7 @@ RUN chmod a+x /opt/decom.sh
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
 # Default libs
-RUN pip3 install --upgrade pip numpy pandas wheel>=0.38.1
+RUN pip3 install --upgrade pip wheel>=0.38.1 numpy pandas pyarrow
 # Python vuln check, and remove package afterwards
 RUN pip install safety
 RUN safety check --full-report
