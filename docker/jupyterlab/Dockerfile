@@ -122,19 +122,6 @@ RUN safety check --full-report -i 49913 -i 50463 -i 50664
 RUN pip uninstall -y safety && \
     rm -rf /home/jovyan/.cache
 
-#Requirements for gcloud cli
-RUN apt update && \
-    apt-get -y install apt-transport-https ca-certificates gnupg && \
-    apt-get -y clean
-
-#Install gcloud CLI
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
-    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && \
-    apt-get update -y && \
-    apt-get install google-cloud-cli -y && \
-    apt-get -y clean
-
-
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
 # https://github.com/tidyverse/haven/issues/681
