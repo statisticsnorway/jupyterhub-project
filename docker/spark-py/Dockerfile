@@ -1,7 +1,9 @@
 # This Dockerfile is inspired by
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
 
-FROM adoptopenjdk/openjdk11:jre
+# Use base image that has the same JRE as jupyter/all-spark-notebook
+FROM eclipse-temurin:11-jre-focal AS prod
+
 WORKDIR /
 
 # Reset to root to run installation tasks
@@ -18,20 +20,11 @@ RUN set -ex && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
-    apt install -y python3 python3-pip && \
-    pip3 install --upgrade pip setuptools && \
-    echo "Wheel 0.38.1 fixes a potential DoS attack via the 'WHEEL_INFO_RE' regular expression." && \
-    pip3 install wheel==0.38.1 pandas numpy && \
-    apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
+    apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev tini procps net-tools python3-pip \
     libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
-    rm -r /root/.cache && rm -rf /var/cache/apt/*     # Remove the .cache to save space
-
-# Add Tini (not found via apt-get)
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-RUN chmod +x /usr/bin/tini
+    rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*     # Remove the .cache to save space
 
 # Install latest Spark version
 RUN wget https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop3.2.tgz && \
@@ -65,7 +58,7 @@ RUN chmod a+x /opt/decom.sh
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
 # Default libs
-RUN pip3 install numpy
+RUN pip3 install --upgrade pip wheel>=0.38.1 numpy pandas pyarrow
 # Python vuln check, and remove package afterwards
 RUN pip install safety
 RUN safety check --full-report
