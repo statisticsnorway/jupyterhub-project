@@ -20,3 +20,5 @@ RUN rm -f /etc/localtime && \
 
 USER jovyan
 
+# Direct to stdout for Google Cloud Logging
+CMD jupyterhub --config /usr/local/etc/jupyterhub/jupyterhub_config.py &>> /dev/stdout
