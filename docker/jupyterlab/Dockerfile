@@ -75,7 +75,9 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install Dapla tools" && \
     python3 -m pip install dapla-toolbelt==1.3.7 ssb-datadoc[gcs]==0.2.2 ssb-project-cli==1.0.11 venv-pack && \
     echo "**** install pyspark, pyarrow, gcs libraries" && \
-    python3 -m pip install pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage && \
+    python3 -m pip install pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage  && \
+    echo "**** fix vulnerable google-cloud-storage dependency" && \
+    python3 -m pip install --pre SQLAlchemy && \
     echo "**** install nbdev ****" && \
     python3 -m pip install nbdev && \
     python3 -m pip cache purge && \
