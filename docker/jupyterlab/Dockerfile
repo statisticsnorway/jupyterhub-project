@@ -73,13 +73,16 @@ RUN echo "**** install ssb_spark_tools ****" && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
     echo "**** install Dapla tools" && \
-    python3 -m pip install dapla-toolbelt==1.3.7 ssb-datadoc[gcs]==0.2.2 ssb-project-cli==1.0.11 venv-pack && \
+    python3 -m pip install dapla-toolbelt==1.3.7 ssb-datadoc[gcs]==0.2.2 ssb-project-cli==1.0.11 dapla-team-cli==0.0.6 venv-pack && \
     echo "**** install pyspark, pyarrow, gcs libraries" && \
     python3 -m pip install pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage && \
     echo "**** install nbdev ****" && \
     python3 -m pip install nbdev && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+
+
+ENV DAPLA_TEAM_API_BASE_URL="http://dapla-team-api.dapla.svc.cluster.local"
 
 
 COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
