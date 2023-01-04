@@ -82,7 +82,7 @@ RUN echo "**** install ssb_spark_tools ****" && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 
-ENV DAPLA_TEAM_API_BASE_URL="http://dapla-team-api.dapla.svc.cluster.local"
+ENV DAPLA_TEAM_API_BASE_URL="http://dapla-team-api.dapla.svc.cluster.local/"
 
 
 COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
