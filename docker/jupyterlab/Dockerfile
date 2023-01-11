@@ -131,6 +131,25 @@ RUN pip uninstall -y safety && \
 #COPY scan.R /tmp/
 #RUN Rscript /tmp/scan.R
 
+#Requirements for gcloud cli
+RUN apt update && \
+    apt-get -y install apt-transport-https ca-certificates gnupg && \
+    apt-get -y clean
+
+#Install gcloud CLI
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && \
+    apt-get update -y && \
+    apt-get install google-cloud-cli -y && \
+    apt-get -y clean
+
+# Install Cloud SQL Auth proxy
+RUN wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /usr/local/bin/cloud_sql_proxy && \
+    chmod +x /usr/local/bin/cloud_sql_proxy
+
+RUN rm -rf /home/jovyan/.cache
+
+
 RUN rm -rf /home/jovyan/.cache
 
 # User will not be able to install packages outside of a virtual environment
