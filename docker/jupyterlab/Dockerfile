@@ -133,7 +133,7 @@ RUN pip uninstall -y safety && \
 
 #Requirements for gcloud cli
 RUN apt update && \
-    apt-get -y install apt-transport-https ca-certificates gnupg && \
+    apt-get -y install apt-transport-https ca-certificates gnupg postgresql-client && \
     apt-get -y clean
 
 #Install gcloud CLI
