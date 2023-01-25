@@ -35,7 +35,7 @@ RUN chmod +x /usr/bin/tini
 # Install latest Spark version
 RUN wget -q "https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" && \
     echo "${spark_checksum} *spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" | sha512sum -c - && \
-    tar xzf "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" -C /usr/local --owner root --group root --no-same-owner && \
+    tar xzf "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" -C ${SPARK_HOME} --owner root --group root --no-same-owner && \
     rm "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz"
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
