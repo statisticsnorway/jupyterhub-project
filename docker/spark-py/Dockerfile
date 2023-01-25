@@ -11,6 +11,8 @@ USER root
 
 ENV SPARK_HOME /opt/spark
 ARG spark_version="3.3.1"
+ARG hadoop_version="3"
+ARG spark_checksum="769db39a560a95fd88b58ed3e9e7d1e92fb68ee406689fb4d30c033cb5911e05c1942dcc70e5ec4585df84e80aabbc272b9386a208debda89522efff1335c8ff"
 
 RUN set -ex && \
     sed -i 's/http:\/\/deb.\(.*\)/https:\/\/deb.\1/g' /etc/apt/sources.list && \
@@ -27,12 +29,12 @@ RUN set -ex && \
     rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*     # Remove the .cache to save space
 
 # Install latest Spark version
-RUN wget https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop3.2.tgz && \
-    tar -zxpf spark-${spark_version}-bin-hadoop3.2.tgz -C /tmp && \
-    mv /tmp/spark-${spark_version}-bin-hadoop3.2 ${SPARK_HOME} && \
-    rm -rf /tmp/spark-${spark_version}-bin-hadoop3.2 && \
-    rm spark-${spark_version}-bin-hadoop3.2.tgz
+RUN wget -q "https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" && \
+    echo "${spark_checksum} *spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" | sha512sum -c - && \
+    tar xzf "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" -C /usr/local --owner root --group root --no-same-owner && \
+    rm "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz"
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
+
 
 # Python 3.x is not available in the standard Debian 10 repositories, so
 # it must be built from source
