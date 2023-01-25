@@ -25,7 +25,7 @@ RUN set -ex && \
     apt-get -y upgrade && \
     apt-get -y dist-upgrade && \
     apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
-    libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl libicu66 && \
+    libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
     rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*     # Remove the .cache to save space
@@ -48,11 +48,10 @@ ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 # Install R 4.0.1 (http://cloud.r-project.org/bin/linux/debian/)
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
-RUN \
-    echo "deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/" >> /etc/apt/sources.list && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
+RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" >> /etc/apt/sources.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     apt-get update && \
-    apt install -y -t focal-cran40 r-base r-base-dev r-base-core r-recommended && \
+    apt install -y -t jammy-cran40 r-base r-base-dev r-base-core r-recommended && \
     rm -rf /var/cache/apt/*
 
 ENV R_HOME /usr/lib/R
