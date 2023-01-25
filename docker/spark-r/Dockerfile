@@ -2,7 +2,10 @@
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
 
 # Use base image that has the same JRE as jupyter/all-spark-notebook
-FROM eclipse-temurin:11-jre-focal AS prod
+ARG java_image_tag=17-jre
+
+FROM eclipse-temurin:${java_image_tag}
+
 WORKDIR /
 
 # Reset to root to run installation tasks
@@ -25,7 +28,7 @@ RUN set -ex && \
     libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
-    rm -rf /var/cache/apt/*
+    rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*     # Remove the .cache to save space
 
 # Add Tini (not found via apt-get)
 ENV TINI_VERSION v0.19.0
@@ -33,7 +36,10 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Install latest Spark version
-RUN wget -q "https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" && \
+# Install latest Spark version
+RUN mkdir -p ${SPARK_HOME} && \
+    mkdir -p ${SPARK_HOME}/work-dir && \
+    wget -q "https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" && \
     echo "${spark_checksum} *spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" | sha512sum -c - && \
     tar xzf "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" -C ${SPARK_HOME} --owner root --group root --no-same-owner && \
     rm "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz"
