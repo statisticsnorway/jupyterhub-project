@@ -4,7 +4,7 @@
 # Use base image that has the same JRE as jupyter/all-spark-notebook
 ARG java_image_tag=17-jre
 
-FROM eclipse-temurin:${java_image_tag}
+FROM eclipse-temurin:${java_image_tag} as prod
 
 WORKDIR /
 
