@@ -10,7 +10,7 @@ WORKDIR /
 USER root
 
 ENV SPARK_HOME /opt/spark
-ARG spark_version="3.2.1"
+ARG spark_version="3.3.1"
 
 RUN set -ex && \
     sed -i 's/http:\/\/deb.\(.*\)/https:\/\/deb.\1/g' /etc/apt/sources.list && \
