@@ -1,8 +1,8 @@
 FROM eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest
 
-ARG spark_version="3.2.1"
-ARG hadoop_version="3.2"
-ARG spark_checksum="145ADACF189FECF05FBA3A69841D2804DD66546B11D14FC181AC49D89F3CB5E4FECD9B25F56F0AF767155419CD430838FB651992AEB37D3A6F91E7E009D1F9AE"
+ARG spark_version="3.3.1"
+ARG hadoop_version="3"
+ARG spark_checksum="769db39a560a95fd88b58ed3e9e7d1e92fb68ee406689fb4d30c033cb5911e05c1942dcc70e5ec4585df84e80aabbc272b9386a208debda89522efff1335c8ff"
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014

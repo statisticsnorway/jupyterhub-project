@@ -2,14 +2,19 @@
 # https://github.com/apache/spark/blob/master/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile
 
 # Use base image that has the same JRE as jupyter/all-spark-notebook
-FROM eclipse-temurin:11-jre-focal AS prod
+ARG java_image_tag=17-jre
+
+FROM eclipse-temurin:${java_image_tag} as prod
+
 WORKDIR /
 
 # Reset to root to run installation tasks
 USER root
 
 ENV SPARK_HOME /opt/spark
-ARG spark_version="3.2.1"
+ARG spark_version="3.3.1"
+ARG hadoop_version="3"
+ARG spark_checksum="769db39a560a95fd88b58ed3e9e7d1e92fb68ee406689fb4d30c033cb5911e05c1942dcc70e5ec4585df84e80aabbc272b9386a208debda89522efff1335c8ff"
 
 RUN set -ex && \
     sed -i 's/http:\/\/deb.\(.*\)/https:\/\/deb.\1/g' /etc/apt/sources.list && \
@@ -23,7 +28,7 @@ RUN set -ex && \
     libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev wget libbz2-dev curl && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
-    rm -rf /var/cache/apt/*
+    rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*     # Remove the .cache to save space
 
 # Add Tini (not found via apt-get)
 ENV TINI_VERSION v0.19.0
@@ -31,21 +36,22 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Install latest Spark version
-RUN wget https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop3.2.tgz && \
-    tar -zxpf spark-${spark_version}-bin-hadoop3.2.tgz -C /tmp && \
-    mv /tmp/spark-${spark_version}-bin-hadoop3.2 ${SPARK_HOME} && \
-    rm -rf /tmp/spark-${spark_version}-bin-hadoop3.2 && \
-    rm spark-${spark_version}-bin-hadoop3.2.tgz
+# Install latest Spark version
+RUN mkdir -p ${SPARK_HOME} && \
+    mkdir -p ${SPARK_HOME}/work-dir && \
+    wget -q "https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" && \
+    echo "${spark_checksum} *spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" | sha512sum -c - && \
+    tar xzf "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" -C ${SPARK_HOME} --owner root --group root --no-same-owner && \
+    rm "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz"
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
 # Install R 4.0.1 (http://cloud.r-project.org/bin/linux/debian/)
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
-RUN \
-    echo "deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/" >> /etc/apt/sources.list && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
+RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" >> /etc/apt/sources.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     apt-get update && \
-    apt install -y -t focal-cran40 r-base r-base-dev r-base-core r-recommended && \
+    apt install -y -t jammy-cran40 r-base r-base-dev r-base-core r-recommended && \
     rm -rf /var/cache/apt/*
 
 ENV R_HOME /usr/lib/R
