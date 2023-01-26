@@ -36,13 +36,11 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Install latest Spark version
-# Install latest Spark version
-RUN mkdir -p ${SPARK_HOME} && \
-    mkdir -p ${SPARK_HOME}/work-dir && \
-    wget -q "https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" && \
-    echo "${spark_checksum} *spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" | sha512sum -c - && \
-    tar xzf "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz" -C ${SPARK_HOME} --owner root --group root --no-same-owner && \
-    rm "spark-${spark_version}-bin-hadoop${hadoop_version}.tgz"
+RUN wget https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${HADOOP_VERSION}.tgz && \
+     tar -zxpf spark-${spark_version}-bin-hadoop${HADOOP_VERSION}.tgz -C /tmp && \
+     mv /tmp/spark-${spark_version}-bin-hadoop${HADOOP_VERSION} ${SPARK_HOME} && \
+     rm -rf /tmp/spark-${spark_version}-bin-hadoop${HADOOP_VERSION} && \
+     rm spark-${spark_version}-bin-hadoop${HADOOP_VERSION}.tgz
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
 # Install R 4.0.1 (http://cloud.r-project.org/bin/linux/debian/)
