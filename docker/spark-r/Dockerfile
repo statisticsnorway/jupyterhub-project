@@ -60,9 +60,10 @@ ENV R_HOME /usr/lib/R
 RUN wget -O /opt/entrypoint.sh https://raw.githubusercontent.com/apache/spark/v${spark_version}/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/entrypoint.sh && \
     wget -O /opt/decom.sh https://raw.githubusercontent.com/apache/spark/v${spark_version}/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/decom.sh
 
-WORKDIR /opt/spark/work-dir
-RUN chmod g+w /opt/spark/work-dir
-RUN chmod a+x /opt/decom.sh
+WORKDIR ${SPARK_HOME}/work-dir
+RUN chmod g+w ${SPARK_HOME}/work-dir && \
+    chmod a+x /opt/decom.sh && \
+    chmod a+x /opt/entrypoint.sh
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
 # Specify the User that the actual main process will run as
