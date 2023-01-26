@@ -56,8 +56,9 @@ RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" >> /et
 
 ENV R_HOME /usr/lib/R
 
-COPY entrypoint.sh /opt/
-COPY decom.sh /opt/
+# Cppy executables from Spark source
+RUN wget -O /opt/entrypoint.sh https://raw.githubusercontent.com/apache/spark/v${spark_version}/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/entrypoint.sh && \
+    wget -O /opt/decom.sh https://raw.githubusercontent.com/apache/spark/v${spark_version}/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/decom.sh
 
 WORKDIR /opt/spark/work-dir
 RUN chmod g+w /opt/spark/work-dir

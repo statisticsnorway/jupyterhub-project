@@ -55,8 +55,9 @@ RUN cd Python-3.10.8 && \
     ln -s /usr/local/bin/python3 /opt/conda/bin/python3 && \
     rm -rf Python-3.10.8
 
-COPY entrypoint.sh /opt/
-COPY decom.sh /opt/
+# Cppy executables from Spark source
+RUN wget -O /opt/entrypoint.sh https://raw.githubusercontent.com/apache/spark/v${spark_version}/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/entrypoint.sh && \
+    wget -O /opt/decom.sh https://raw.githubusercontent.com/apache/spark/v${spark_version}/resource-managers/kubernetes/docker/src/main/dockerfiles/spark/decom.sh
 
 WORKDIR ${SPARK_HOME}/work-dir
 RUN chmod g+w ${SPARK_HOME}/work-dir
