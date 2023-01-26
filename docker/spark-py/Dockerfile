@@ -31,11 +31,11 @@ RUN set -ex && \
     rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*     # Remove the .cache to save space
 
 # Install latest Spark version
-RUN wget https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${HADOOP_VERSION}.tgz && \
-     tar -zxpf spark-${spark_version}-bin-hadoop${HADOOP_VERSION}.tgz -C /tmp && \
-     mv /tmp/spark-${spark_version}-bin-hadoop${HADOOP_VERSION} ${SPARK_HOME} && \
-     rm -rf /tmp/spark-${spark_version}-bin-hadoop${HADOOP_VERSION} && \
-     rm spark-${spark_version}-bin-hadoop${HADOOP_VERSION}.tgz
+RUN wget https://archive.apache.org/dist/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop${hadoop_version}.tgz && \
+     tar -zxpf spark-${spark_version}-bin-hadoop${hadoop_version}.tgz -C /tmp && \
+     mv /tmp/spark-${spark_version}-bin-hadoop${hadoop_version} ${SPARK_HOME} && \
+     rm -rf /tmp/spark-${spark_version}-bin-hadoop${hadoop_version} && \
+     rm spark-${spark_version}-bin-hadoop${hadoop_version}.tgz
 ENV PATH="$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin"
 
 # Python 3.x is not available in the standard Debian 10 repositories, so
