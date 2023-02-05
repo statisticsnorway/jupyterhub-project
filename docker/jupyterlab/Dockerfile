@@ -119,6 +119,7 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 #COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
 #RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
 
+USER $NB_UID
 # Python vuln check, and remove package afterwards
 RUN pip install safety
 RUN safety check --full-report -i 49913 -i 50463 -i 50664 -i 51668
@@ -135,5 +136,3 @@ RUN rm -rf /home/jovyan/.cache
 
 # User will not be able to install packages outside of a virtual environment
 ENV PIP_REQUIRE_VIRTUALENV=true
-
-USER $NB_UID
