@@ -107,6 +107,8 @@ COPY pipenv_kernel.bash /opt/dapla/pipenv_kernel.sh
 RUN chmod +x /opt/dapla/pipenv_kernel.sh && \
     echo "alias pipenv-kernel='/opt/dapla/pipenv_kernel.sh'" >> /etc/bash.bashrc
 
+# User will not be able to install packages outside of a virtual environment
+ENV PIP_REQUIRE_VIRTUALENV=true
 # Virtual environments should be stored in the container, so that they don't fill the 2G storage of the home dir.
 ENV WORKON_HOME="/virtualenvs"
 RUN mkdir "$WORKON_HOME" && \
@@ -133,6 +135,3 @@ RUN pip uninstall -y safety && \
 #RUN Rscript /tmp/scan.R
 
 RUN rm -rf /home/jovyan/.cache
-
-# User will not be able to install packages outside of a virtual environment
-ENV PIP_REQUIRE_VIRTUALENV=true
