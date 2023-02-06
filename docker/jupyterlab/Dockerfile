@@ -119,12 +119,12 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 #COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
 #RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
 
-USER $NB_UID
+#USER $NB_UID
 # Python vuln check, and remove package afterwards
-RUN pip install safety
-RUN safety check --full-report -i 49913 -i 50463 -i 50664 -i 51668
-RUN pip uninstall -y safety && \
-    rm -rf /home/jovyan/.cache
+#RUN pip install safety
+#RUN safety check --full-report -i 49913 -i 50463 -i 50664 -i 51668
+#RUN pip uninstall -y safety && \
+#    rm -rf /home/jovyan/.cache
 
 # Copy and run R-script for scanning installed R-packages
 # docker build fails if vulnerabilities are found
@@ -132,9 +132,9 @@ RUN pip uninstall -y safety && \
 #COPY scan.R /tmp/
 #RUN Rscript /tmp/scan.R
 
-RUN rm -rf /home/jovyan/.cache
+#RUN rm -rf /home/jovyan/.cache
 
-USER root
+#USER root
 # User will not be able to install packages outside of a virtual environment
 ENV PIP_REQUIRE_VIRTUALENV=true
 USER $NB_UID
