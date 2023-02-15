@@ -67,13 +67,13 @@ RUN echo "**** install pipenv envkernel ****" && \
 
 # Customer defined libraries
 RUN echo "**** install ssb_spark_tools ****" && \
-    python3 -m pip install ssb_spark_tools==0.1.6 && \
+    python3 -m pip install ssb_spark_tools==0.1.12 && \
     echo "**** install sphinx ****" && \
     python3 -m pip install sphinx sphinx-autodoc-defaultargs sphinx-autodoc-typehints sphinx-rtd-theme && \
     echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
     python3 -m pip install pandas-gbq && \
     echo "**** install Dapla tools" && \
-    python3 -m pip install dapla-toolbelt==1.3.12 ssb-datadoc[gcs]==0.2.4 ssb-project-cli==1.0.13 dapla-team-cli==0.0.11 venv-pack && \
+    python3 -m pip install dapla-toolbelt==1.4.0 ssb-datadoc[gcs]==0.2.4 ssb-project-cli==1.0.13 dapla-team-cli==0.0.11 venv-pack && \
     echo "**** install pyspark, pyarrow, gcs libraries" && \
     python3 -m pip install pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage && \
     echo "**** install nbdev ****" && \
