@@ -66,7 +66,7 @@
                                 <artifactItem>
                                     <groupId>org.apache.spark</groupId>
                                     <artifactId>spark-avro_2.12</artifactId>
-                                    <version>3.2.1</version>
+                                    <version>3.3.1</version>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>target/</outputDirectory>
@@ -107,7 +107,7 @@
                                 <artifactItem>
                                     <groupId>org.apache.spark</groupId>
                                     <artifactId>spark-avro_2.12</artifactId>
-                                    <version>3.2.1</version>
+                                    <version>3.3.1</version>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>jupyter/</outputDirectory>
