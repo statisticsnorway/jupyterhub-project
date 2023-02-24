@@ -66,18 +66,17 @@ RUN echo "**** install pipenv envkernel ****" && \
     python3 -m pip install pipenv envkernel
 
 # Customer defined libraries
-RUN echo "**** install ssb_spark_tools ****" && \
-    python3 -m pip install ssb_spark_tools==0.1.12 && \
-    echo "**** install sphinx ****" && \
+RUN echo "**** install sphinx ****" && \
     python3 -m pip install sphinx sphinx-autodoc-defaultargs sphinx-autodoc-typehints sphinx-rtd-theme && \
-    echo "**** install pandas-gbq and correponding google (auth/cloud/bigquery) dependencies " && \
-    python3 -m pip install pandas-gbq && \
     echo "**** install Dapla tools" && \
-    python3 -m pip install dapla-toolbelt==1.6.1 ssb-datadoc[gcs]==0.2.4 ssb-project-cli==1.0.13 dapla-team-cli==0.0.11 venv-pack && \
-    echo "**** install pyspark, pyarrow, gcs libraries" && \
-    python3 -m pip install pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage && \
-    echo "**** install nbdev ****" && \
-    python3 -m pip install nbdev && \
+    python3 -m pip install \
+    dapla-toolbelt==1.6.2 \
+    ssb-datadoc[gcs]==0.2.4 \
+    ssb-project-cli==1.0.13 \
+    dapla-team-cli==0.0.11 \
+    ssb_spark_tools==0.1.12 && \
+    echo "**** install other tools" && \
+    python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage venv-pack nbdev && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
