@@ -75,8 +75,8 @@ RUN echo "**** install sphinx ****" && \
     ssb-project-cli==1.0.13 \
     dapla-team-cli==0.0.11 \
     ssb_spark_tools==0.1.12 && \
-    echo "**** install pyspark, pyarrow, gcs libraries" && \
-    python3 -m pip install pandas-gbq, pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage venv-pack nbdev && \
+    echo "**** install other tools" && \
+    python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage venv-pack nbdev && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
