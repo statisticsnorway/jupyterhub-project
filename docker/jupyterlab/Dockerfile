@@ -73,7 +73,7 @@ RUN echo "**** install sphinx ****" && \
     dapla-toolbelt==1.6.2 \
     ssb-datadoc[gcs]==0.2.4 \
     ssb-project-cli==1.0.13 \
-    dapla-team-cli==0.1.2 \
+    dapla-team-cli==0.0.11 \
     ssb_spark_tools==0.1.12 && \
     echo "**** install other tools" && \
     python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage venv-pack nbdev && \
