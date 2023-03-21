@@ -1,0 +1,15 @@
+{
+  "display_name": "R (irkernel)",
+  "language": "R",
+  "argv": [
+    "/usr/bin/R",
+    "--slave",
+    "-e",
+    "IRkernel::main()",
+    "--args",
+    "{connection_file}"
+  ],
+  "env": {
+    "R_LIBS_USER": "/usr/lib/R/library"
+  }
+}

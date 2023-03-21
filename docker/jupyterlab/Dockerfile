@@ -11,10 +11,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Copy the kernels. (pre-defined kernels are found at /opt/conda/share/jupyter/kernels)
 COPY pyspark_k8s /usr/local/share/jupyter/kernels/pyspark_k8s/
 COPY pyspark_local /usr/local/share/jupyter/kernels/pyspark_local/
-COPY sparkR_k8s/kernel.json /opt/conda/share/jupyter/kernels/ir_k8s/
-COPY sparkR_k8s/Rstartup /opt/conda/share/jupyter/kernels/ir_k8s/
-COPY sparkR_local/kernel.json /opt/conda/share/jupyter/kernels/ir/
-COPY sparkR_local/Rstartup /opt/conda/share/jupyter/kernels/ir/
+COPY sparkR_k8s/* /opt/conda/share/jupyter/kernels/ir_k8s/
+COPY sparkR_local/* /opt/conda/share/jupyter/kernels/ir_spark/
+COPY R/* /opt/conda/share/jupyter/kernels/ir/
 
 USER root
 # Spark installation
