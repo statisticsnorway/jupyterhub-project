@@ -1,0 +1,4 @@
+local({
+    options(repos = c(RSTUDIO = "https://packagemanager.rstudio.com/all/latest", CRAN_UIB = "https://cran.uib.no"))
+})
+

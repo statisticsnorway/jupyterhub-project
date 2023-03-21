@@ -15,6 +15,9 @@ COPY sparkR_k8s/* /opt/conda/share/jupyter/kernels/ir_k8s/
 COPY sparkR_local/* /opt/conda/share/jupyter/kernels/ir_spark/
 COPY R/* /opt/conda/share/jupyter/kernels/ir/
 
+# Change default R repo
+COPY Rprofile.site /etc/R/Rprofile.site
+
 USER root
 # Spark installation
 ENV APACHE_SPARK_VERSION="${spark_version}" \
