@@ -74,7 +74,7 @@ RUN echo "**** install sphinx ****" && \
     python3 -m pip install \
     dapla-toolbelt==1.6.2 \
     ssb-datadoc[gcs]==0.2.4 \
-    ssb-project-cli==1.0.14 \
+    ssb-project-cli==1.0.15 \
     dapla-team-cli==0.1.2 \
     ssb_spark_tools==0.1.12 && \
     echo "**** install other tools" && \
