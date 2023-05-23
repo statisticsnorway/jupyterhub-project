@@ -90,8 +90,6 @@ ENV DAPLA_TEAM_API_BASE_URL="http://dapla-team-api.dapla.svc.cluster.local"
 COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
 COPY restart-ssh-agent.bash /usr/local/bin/restart-ssh-agent.sh
 
-COPY check-git-config.bash /usr/local/bin/check-git-config.sh
-
 # Copy the GCS connector.
 COPY gcs-connector-shaded.jar /jupyter/lib/gcs-connector-hadoop.jar
 # Copy the access token provider for the GCS connector
