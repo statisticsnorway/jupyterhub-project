@@ -74,7 +74,8 @@ RUN echo "**** install sphinx ****" && \
     python3 -m pip install \
     dapla-toolbelt==1.7.0 \
     ssb-datadoc[gcs]==0.2.4 \
-    ssb-project-cli==1.0.15 \
+    ssb-project-cli==1.1.0 \
+    kvakk-git-tools==2.2.1 \
     dapla-team-cli==0.1.2 \
     ssb_spark_tools==0.1.12 && \
     echo "**** install other tools" && \
@@ -88,8 +89,6 @@ ENV DAPLA_TEAM_API_BASE_URL="http://dapla-team-api.dapla.svc.cluster.local"
 
 COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
 COPY restart-ssh-agent.bash /usr/local/bin/restart-ssh-agent.sh
-
-COPY check-git-config.bash /usr/local/bin/check-git-config.sh
 
 # Copy the GCS connector.
 COPY gcs-connector-shaded.jar /jupyter/lib/gcs-connector-hadoop.jar
