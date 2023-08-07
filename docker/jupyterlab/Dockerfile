@@ -72,7 +72,7 @@ RUN echo "**** install sphinx ****" && \
     python3 -m pip install sphinx sphinx-autodoc-defaultargs sphinx-autodoc-typehints sphinx-rtd-theme && \
     echo "**** install Dapla tools" && \
     python3 -m pip install \
-    dapla-toolbelt==1.7.0 \
+    git+https://github.com/statisticsnorway/dapla-toolbelt@onyxia-test
     ssb-datadoc[gcs]==0.2.4 \
     ssb-project-cli==1.1.2 \
     kvakk-git-tools==2.2.1 \
