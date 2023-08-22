@@ -99,6 +99,8 @@ COPY access-token-provider-shaded.jar /jupyter/lib/access-token-provider.jar
 COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-dependencies_2.12.jar
 # Copy Apache Spark Avro connector
 COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
+# Copy Delta Lake library
+COPY delta-core_2.12.jar /jupyter/lib/delta-core_2.12.jar
 
 USER root
 # Install pipenv-kernel and delete-pipenv-kernel:
