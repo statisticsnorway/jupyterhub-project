@@ -84,7 +84,7 @@ RUN echo "**** install sphinx ****" && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 # Set template version for ssb-project-cli (https://github.com/statisticsnorway/ssb-project-template-stat)
-ENV STAT_TEMPLATE_DEFAULT_REFERENCE="1.0.1"
+ENV STAT_TEMPLATE_DEFAULT_REFERENCE="1.1.0"
 ENV DAPLA_TEAM_API_BASE_URL="http://dapla-team-api.dapla.svc.cluster.local"
 
 
