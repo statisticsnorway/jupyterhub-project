@@ -102,6 +102,7 @@ jobs:
 
   - job: pullJupyterlabCommonImage
     displayName: 'Pull jupyterlab-common image'
+    continueOnError: true
     # Job condition: Run these jobs on any branch, but not on tags
     condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     variables:
@@ -138,6 +139,7 @@ jobs:
 
   - job: pullLatestDaplaJupyterlabImage
     displayName: 'Pull latest dapla-jupyterlab image'
+    continueOnError: true
     # Job condition: Run these jobs on any branch, but not on tags
     condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     variables:
