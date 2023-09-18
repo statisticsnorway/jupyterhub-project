@@ -76,13 +76,14 @@ COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
 COPY delta-core_2.12.jar /jupyter/lib/delta-core_2.12.jar
 COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 
-RUN echo "**** install Dapla CLI tools using pipx" && \
+RUN echo "**** install pipx" && \
+    python3 -m pip install --user pipx && \
+    python3 -m pipx ensurepath && \
+    echo "**** install Dapla CLI tools using pipx" && \
     pipx install \
     ssb-project-cli==1.3.0 \
-    dapla-team-cli==0.1.2
-
-# Customer defined libraries
-RUN echo "**** install Dapla libraries" && \
+    dapla-team-cli==0.1.2 && \
+    echo "**** install Dapla libraries" && \
     python3 -m pip install \
     dapla-toolbelt==1.8.1 \
     ssb-datadoc==0.3.0 \
