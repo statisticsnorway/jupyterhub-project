@@ -106,16 +106,16 @@ jobs:
     condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     variables:
       repository: 'eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common'
-      path: 'docker_pull_jupyterlab_common_image'
+      cache_path: 'docker_pull_jupyterlab_common_image'
     steps:
       - task: Cache@2
         displayName: Restore cache
         inputs:
-          key: '"$(path)" | "$(Agent.OS)" | cache'
-          path: $(Pipeline.Workspace)/$(path)
+          key: '"$(cache_path)" | "$(Agent.OS)" | cache'
+          path: $(Pipeline.Workspace)/$(cache_path)
           cacheHitVar: CACHE_RESTORED  # Set variable to 'true' if the cache is restored
 
-      - script: docker load -i $(Pipeline.Workspace)/$(path)/cache.tar
+      - script: docker load -i $(Pipeline.Workspace)/$(cache_path)/cache.tar
         displayName: Docker load jupyterlab-common cache
         condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
 
@@ -131,8 +131,8 @@ jobs:
         continueOnError: 'true' # for first build, no cache
 
       - script: |
-          mkdir -p $(Pipeline.Workspace)/$(path)
-          docker save -o $(Pipeline.Workspace)/$(path)/cache.tar $(repository):$(tag)
+          mkdir -p $(Pipeline.Workspace)/$(cache_path)
+          docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):$(tag)
         displayName: Docker save
         condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
@@ -142,16 +142,16 @@ jobs:
     condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     variables:
       repository: ${{ variables.imageName }}
-      path: 'docker_pull_latest_dapla_jupyterlab_image'
+      cache_path: 'docker_pull_latest_dapla_jupyterlab_image'
     steps:
       - task: Cache@2
         displayName: Restore cache
         inputs:
-          key: '"$(path)" | "$(Agent.OS)" | cache'
-          path: $(Pipeline.Workspace)/$(path)
+          key: '"$(cache_path)" | "$(Agent.OS)" | cache'
+          path: $(Pipeline.Workspace)/$(cache_path)
           cacheHitVar: CACHE_RESTORED  # Set variable to 'true' if the cache is restored
 
-      - script: docker load -i $(Pipeline.Workspace)/$(path)/cache.tar
+      - script: docker load -i $(Pipeline.Workspace)/$(cache_path)/cache.tar
         displayName: Docker load jupyterlab-common cache
         condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
 
@@ -167,8 +167,8 @@ jobs:
         continueOnError: 'true' # for first build, no cache
 
       - script: |
-          mkdir -p $(Pipeline.Workspace)/$(path)
-          docker save -o $(Pipeline.Workspace)/$(path)/cache.tar $(repository):$(tag)
+          mkdir -p $(Pipeline.Workspace)/$(cache_path)
+          docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):$(tag)
         displayName: Docker save
         condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
