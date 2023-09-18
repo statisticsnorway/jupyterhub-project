@@ -78,8 +78,9 @@ COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 
 RUN echo "**** install pipx" && \
     python3 -m pip install --user pipx && \
-    python3 -m pipx ensurepath && \
-    echo "**** install Dapla CLI tools using pipx" && \
+    python3 -m pipx ensurepath
+
+RUN echo "**** install Dapla CLI tools using pipx" && \
     pipx install \
     ssb-project-cli==1.3.0 \
     dapla-team-cli==0.1.2 && \
