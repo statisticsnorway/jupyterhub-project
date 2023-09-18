@@ -207,6 +207,7 @@ jobs:
           mkdir -p $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
           docker load -i $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image/cache.tar
         displayName: Docker load jupyterlab-common cache
+        continueOnError: 'true'
         condition: and(not(canceled()), eq(variables.COMMON_IMAGE_CACHE_RESTORED, 'true'))
 
       # Restore dapla-jupyterlab image from cache to save time and memory
@@ -221,6 +222,7 @@ jobs:
           mkdir -p $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
           docker load -i $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image/cache.tar
         displayName: Docker load dapla-jupyterlab cache
+        continueOnError: 'true'
         condition: and(not(canceled()), eq(variables.LATEST_IMAGE_CACHE_RESTORED, 'true'))
 
       # Authenticate Docker to GCR using predefined service connection
