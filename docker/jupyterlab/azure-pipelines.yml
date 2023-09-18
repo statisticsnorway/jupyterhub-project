@@ -196,6 +196,7 @@ jobs:
       # Restore jupyterlab-common image from cache to save time and memory
       - task: Cache@2
         displayName: Restore jupyterlab-common cache
+        continueOnError: true
         inputs:
           key: 'docker_pull_jupyterlab_common_image | "$(Agent.OS)" | cache'
           path: $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
@@ -209,6 +210,7 @@ jobs:
       # Restore dapla-jupyterlab image from cache to save time and memory
       - task: Cache@2
         displayName: Restore dapla-jupyterlab cache
+        continueOnError: true
         inputs:
           key: 'docker_pull_latest_dapla_jupyterlab_image | "$(Agent.OS)" | cache'
           path: $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
