@@ -105,21 +105,7 @@ jobs:
     continueOnError: true
     # Job condition: Run these jobs on any branch, but not on tags
     condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
-    variables:
-      repository: 'eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common'
-      cache_path: 'docker_pull_jupyterlab_common_image'
     steps:
-      - task: Cache@2
-        displayName: Restore cache
-        inputs:
-          key: '"$(cache_path)" | "$(Agent.OS)" | cache'
-          path: $(Pipeline.Workspace)/$(cache_path)
-          cacheHitVar: CACHE_RESTORED  # Set variable to 'true' if the cache is restored
-
-      - script: docker load -i $(Pipeline.Workspace)/$(cache_path)/cache.tar
-        displayName: Docker load jupyterlab-common cache
-        condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
-        continueOnError: 'true' # for first build, no cache
 
       # Authenticate Docker to GCR using predefined service connection
       - task: Docker@2
@@ -128,37 +114,16 @@ jobs:
           command: login
           containerRegistry: gcrServiceConnection
 
-      - script: docker pull $(repository):latest
+      - script: docker pull eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest
         displayName: 'Pull latest jupyterlab-common image'
-        continueOnError: 'true' # for first build, no cache
 
-      # This step was failing due to 'no space left on device'
-      # - script: |
-      #     mkdir -p $(Pipeline.Workspace)/$(cache_path)
-      #     docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):latest
-      #   displayName: Docker save
-      #   condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
   - job: pullLatestDaplaJupyterlabImage
     displayName: 'Pull latest dapla-jupyterlab image'
     continueOnError: true
     # Job condition: Run these jobs on any branch, but not on tags
     condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
-    variables:
-      repository: ${{ variables.imageName }}
-      cache_path: 'docker_pull_latest_dapla_jupyterlab_image'
     steps:
-      - task: Cache@2
-        displayName: Restore cache
-        inputs:
-          key: '"$(cache_path)" | "$(Agent.OS)" | cache'
-          path: $(Pipeline.Workspace)/$(cache_path)
-          cacheHitVar: CACHE_RESTORED  # Set variable to 'true' if the cache is restored
-
-      - script: docker load -i $(Pipeline.Workspace)/$(cache_path)/cache.tar
-        displayName: Docker load jupyterlab-common cache
-        condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
-        continueOnError: 'true' # for first build, no cache
 
       # Authenticate Docker to GCR using predefined service connection
       - task: Docker@2
@@ -167,16 +132,8 @@ jobs:
           command: login
           containerRegistry: gcrServiceConnection
 
-      - script: docker pull $(repository):latest
+      - script: docker pull ${{ variables.imageName }}:latest
         displayName: 'Pull latest dapla-jupyterlab image'
-        continueOnError: 'true' # for first build, no cache
-
-      # This step was failing due to 'no space left on device'
-      # - script: |
-      #     mkdir -p $(Pipeline.Workspace)/$(cache_path)
-      #     docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):latest
-      #   displayName: Docker save
-      #   condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
   # Job which builds Docker image, pushes this to GCR and checks for any image vulnerabilities
   # NOTE: Sub-project pipelines are still running with the root working directory
@@ -198,38 +155,6 @@ jobs:
       # Copy pipeline artifact into working directory
       - script: cp $(Pipeline.Workspace)/spark-java-libs/*.jar ./docker/jupyterlab
         displayName: 'Copy pipeline artifact into working directory'
-
-      # Restore jupyterlab-common image from cache to save time and memory
-      - task: Cache@2
-        displayName: Restore jupyterlab-common cache
-        continueOnError: true
-        inputs:
-          key: 'docker_pull_jupyterlab_common_image | "$(Agent.OS)" | cache'
-          path: $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
-          cacheHitVar: COMMON_IMAGE_CACHE_RESTORED  # Set variable to 'true' if the cache is restored
-      # This file was never found
-      # - script: |
-      #     mkdir -p $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
-      #     docker load -i $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image/cache.tar
-      #   displayName: Docker load jupyterlab-common cache
-      #   continueOnError: 'true'
-      #   condition: and(not(canceled()), eq(variables.COMMON_IMAGE_CACHE_RESTORED, 'true'))
-
-      # Restore dapla-jupyterlab image from cache to save time and memory
-      - task: Cache@2
-        displayName: Restore dapla-jupyterlab cache
-        continueOnError: true
-        inputs:
-          key: 'docker_pull_latest_dapla_jupyterlab_image | "$(Agent.OS)" | cache'
-          path: $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
-          cacheHitVar: LATEST_IMAGE_CACHE_RESTORED  # Set variable to 'true' if the cache is restored
-      # This file was never found
-      # - script: |
-      #     mkdir -p $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
-      #     docker load -i $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image/cache.tar
-      #   displayName: Docker load dapla-jupyterlab cache
-      #   continueOnError: 'true'
-      #   condition: and(not(canceled()), eq(variables.LATEST_IMAGE_CACHE_RESTORED, 'true'))
 
       # Authenticate Docker to GCR using predefined service connection
       - task: Docker@2
