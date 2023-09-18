@@ -132,7 +132,7 @@ jobs:
 
       - script: |
           mkdir -p $(Pipeline.Workspace)/$(cache_path)
-          docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):$(tag)
+          docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):latest
         displayName: Docker save
         condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
@@ -168,7 +168,7 @@ jobs:
 
       - script: |
           mkdir -p $(Pipeline.Workspace)/$(cache_path)
-          docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):$(tag)
+          docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):latest
         displayName: Docker save
         condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
