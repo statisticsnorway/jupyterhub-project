@@ -115,8 +115,7 @@ jobs:
           path: $(Pipeline.Workspace)/$(path)
           cacheHitVar: CACHE_RESTORED  # Set variable to 'true' if the cache is restored
 
-      - bash: |
-          docker load -i $(Pipeline.Workspace)/$(path)/cache.tar
+      - script: docker load -i $(Pipeline.Workspace)/$(path)/cache.tar
         displayName: Docker load jupyterlab-common cache
         condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
 
@@ -127,12 +126,11 @@ jobs:
           command: login
           containerRegistry: gcrServiceConnection
 
-      - bash: |
-          docker pull $(repository):latest
+      - script: docker pull $(repository):latest
         displayName: 'Pull latest jupyterlab-common image'
         continueOnError: 'true' # for first build, no cache
 
-      - bash: |
+      - script: |
           mkdir -p $(Pipeline.Workspace)/$(path)
           docker save -o $(Pipeline.Workspace)/$(path)/cache.tar $(repository):$(tag)
         displayName: Docker save
@@ -153,8 +151,7 @@ jobs:
           path: $(Pipeline.Workspace)/$(path)
           cacheHitVar: CACHE_RESTORED  # Set variable to 'true' if the cache is restored
 
-      - bash: |
-          docker load -i $(Pipeline.Workspace)/$(path)/cache.tar
+      - script: docker load -i $(Pipeline.Workspace)/$(path)/cache.tar
         displayName: Docker load jupyterlab-common cache
         condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
 
@@ -165,12 +162,11 @@ jobs:
           command: login
           containerRegistry: gcrServiceConnection
 
-      - bash: |
-          docker pull $(repository):latest
+      - script: docker pull $(repository):latest
         displayName: 'Pull latest dapla-jupyterlab image'
         continueOnError: 'true' # for first build, no cache
 
-      - bash: |
+      - script: |
           mkdir -p $(Pipeline.Workspace)/$(path)
           docker save -o $(Pipeline.Workspace)/$(path)/cache.tar $(repository):$(tag)
         displayName: Docker save
@@ -194,8 +190,7 @@ jobs:
         artifact: spark-java-libs
 
       # Copy pipeline artifact into working directory
-      - bash: |
-          cp $(Pipeline.Workspace)/spark-java-libs/*.jar ./docker/jupyterlab
+      - script: cp $(Pipeline.Workspace)/spark-java-libs/*.jar ./docker/jupyterlab
         displayName: 'Copy pipeline artifact into working directory'
 
       # Restore jupyterlab-common image from cache to save time and memory
@@ -205,7 +200,8 @@ jobs:
           key: 'docker_pull_jupyterlab_common_image | "$(Agent.OS)" | cache'
           path: $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
           cacheHitVar: COMMON_IMAGE_CACHE_RESTORED  # Set variable to 'true' if the cache is restored
-      - bash: |
+      - script: |
+          mkdir -p $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
           docker load -i $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image/cache.tar
         displayName: Docker load jupyterlab-common cache
         condition: and(not(canceled()), eq(variables.COMMON_IMAGE_CACHE_RESTORED, 'true'))
@@ -217,7 +213,8 @@ jobs:
           key: 'docker_pull_latest_dapla_jupyterlab_image | "$(Agent.OS)" | cache'
           path: $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
           cacheHitVar: LATEST_IMAGE_CACHE_RESTORED  # Set variable to 'true' if the cache is restored
-      - bash: |
+      - script: |
+          mkdir -p $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
           docker load -i $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image/cache.tar
         displayName: Docker load dapla-jupyterlab cache
         condition: and(not(canceled()), eq(variables.LATEST_IMAGE_CACHE_RESTORED, 'true'))
