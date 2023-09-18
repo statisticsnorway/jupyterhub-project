@@ -76,24 +76,20 @@ COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
 COPY delta-core_2.12.jar /jupyter/lib/delta-core_2.12.jar
 COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 
-# pipenv is used for keeping track of and loading the specific package dependencies of each repository
-# Together with with envkernel Jupyter users can create Jupyter kernels with a different environment.
-RUN echo "**** install pipenv envkernel ****" && \
-    python3 -m pip install pipenv envkernel
+RUN echo "**** install Dapla CLI tools using pipx" && \
+    pipx install \
+    ssb-project-cli==1.3.0 \
+    dapla-team-cli==0.1.2
 
 # Customer defined libraries
-RUN echo "**** install sphinx ****" && \
-    python3 -m pip install sphinx sphinx-autodoc-defaultargs sphinx-autodoc-typehints sphinx-rtd-theme && \
-    echo "**** install Dapla tools" && \
+RUN echo "**** install Dapla libraries" && \
     python3 -m pip install \
     dapla-toolbelt==1.8.1 \
     ssb-datadoc==0.3.0 \
-    ssb-project-cli==1.3.0 \
     kvakk-git-tools==2.2.1 \
-    dapla-team-cli==0.1.2 \
     ssb_spark_tools==0.1.12 && \
     echo "**** install other tools" && \
-    python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} pyarrow google-cloud-storage venv-pack nbdev && \
+    python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} google-cloud-storage venv-pack nbdev && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
