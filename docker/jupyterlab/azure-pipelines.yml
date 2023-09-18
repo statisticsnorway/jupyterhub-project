@@ -131,11 +131,12 @@ jobs:
         displayName: 'Pull latest jupyterlab-common image'
         continueOnError: 'true' # for first build, no cache
 
-      - script: |
-          mkdir -p $(Pipeline.Workspace)/$(cache_path)
-          docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):latest
-        displayName: Docker save
-        condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
+      # This step was failing due to 'no space left on device'
+      # - script: |
+      #     mkdir -p $(Pipeline.Workspace)/$(cache_path)
+      #     docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):latest
+      #   displayName: Docker save
+      #   condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
   - job: pullLatestDaplaJupyterlabImage
     displayName: 'Pull latest dapla-jupyterlab image'
@@ -168,11 +169,12 @@ jobs:
         displayName: 'Pull latest dapla-jupyterlab image'
         continueOnError: 'true' # for first build, no cache
 
-      - script: |
-          mkdir -p $(Pipeline.Workspace)/$(cache_path)
-          docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):latest
-        displayName: Docker save
-        condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
+      # This step was failing due to 'no space left on device'
+      # - script: |
+      #     mkdir -p $(Pipeline.Workspace)/$(cache_path)
+      #     docker save -o $(Pipeline.Workspace)/$(cache_path)/cache.tar $(repository):latest
+      #   displayName: Docker save
+      #   condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
   # Job which builds Docker image, pushes this to GCR and checks for any image vulnerabilities
   # NOTE: Sub-project pipelines are still running with the root working directory
