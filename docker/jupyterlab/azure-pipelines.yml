@@ -119,6 +119,7 @@ jobs:
       - script: docker load -i $(Pipeline.Workspace)/$(cache_path)/cache.tar
         displayName: Docker load jupyterlab-common cache
         condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
+        continueOnError: 'true' # for first build, no cache
 
       # Authenticate Docker to GCR using predefined service connection
       - task: Docker@2
@@ -157,6 +158,7 @@ jobs:
       - script: docker load -i $(Pipeline.Workspace)/$(cache_path)/cache.tar
         displayName: Docker load jupyterlab-common cache
         condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
+        continueOnError: 'true' # for first build, no cache
 
       # Authenticate Docker to GCR using predefined service connection
       - task: Docker@2

@@ -59,8 +59,22 @@ RUN chown -R $NB_UID /opt/conda/share/jupyter/kernels
 RUN chown -R $NB_UID /usr/local/spark/conf/spark-defaults.conf
 
 USER $NB_UID
-
 WORKDIR "${HOME}"
+
+COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
+COPY restart-ssh-agent.bash /usr/local/bin/restart-ssh-agent.sh
+
+# Copy the GCS connector.
+COPY gcs-connector-shaded.jar /jupyter/lib/gcs-connector-hadoop.jar
+# Copy the access token provider for the GCS connector
+COPY access-token-provider-shaded.jar /jupyter/lib/access-token-provider.jar
+# Copy the Apache Spark SQL connector for Google BigQuery
+COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-dependencies_2.12.jar
+# Copy Apache Spark Avro connector
+COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
+# Copy Delta Lake libraries
+COPY delta-core_2.12.jar /jupyter/lib/delta-core_2.12.jar
+COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 
 # pipenv is used for keeping track of and loading the specific package dependencies of each repository
 # Together with with envkernel Jupyter users can create Jupyter kernels with a different environment.
@@ -83,26 +97,6 @@ RUN echo "**** install sphinx ****" && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
-# Set template version for ssb-project-cli (https://github.com/statisticsnorway/ssb-project-template-stat)
-ENV STAT_TEMPLATE_DEFAULT_REFERENCE="1.1.0"
-ENV DAPLA_TEAM_API_BASE_URL="http://dapla-team-api.dapla.svc.cluster.local"
-
-
-COPY ssh-agent-helper.bash /usr/local/bin/ssh-agent-helper.sh
-COPY restart-ssh-agent.bash /usr/local/bin/restart-ssh-agent.sh
-
-# Copy the GCS connector.
-COPY gcs-connector-shaded.jar /jupyter/lib/gcs-connector-hadoop.jar
-# Copy the access token provider for the GCS connector
-COPY access-token-provider-shaded.jar /jupyter/lib/access-token-provider.jar
-# Copy the Apache Spark SQL connector for Google BigQuery
-COPY spark-bigquery-with-dependencies_2.12.jar /jupyter/lib/spark-bigquery-with-dependencies_2.12.jar
-# Copy Apache Spark Avro connector
-COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
-# Copy Delta Lake libraries
-COPY delta-core_2.12.jar /jupyter/lib/delta-core_2.12.jar
-COPY delta-storage.jar /jupyter/lib/delta-storage.jar
-
 USER root
 # Install pipenv-kernel and delete-pipenv-kernel:
 # - Copy in scripts
@@ -119,26 +113,6 @@ RUN mkdir "$WORKON_HOME" && \
 # Allow notebook user to write (install) new R packages to the library
 RUN chown -R $NB_UID "$R_LIBS_USER"
 
-# Image vulnerability scan. If exit code set to 1, fails image build
-#COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
-#RUN trivy filesystem --ignore-unfixed --exit-code 0 --severity HIGH,CRITICAL /
-
-#USER $NB_UID
-# Python vuln check, and remove package afterwards
-#RUN pip install safety
-#RUN safety check --full-report -i 49913 -i 50463 -i 50664 -i 51668
-#RUN pip uninstall -y safety && \
-#    rm -rf /home/jovyan/.cache
-
-# Copy and run R-script for scanning installed R-packages
-# docker build fails if vulnerabilities are found
-# https://github.com/tidyverse/haven/issues/681
-#COPY scan.R /tmp/
-#RUN Rscript /tmp/scan.R
-
-#RUN rm -rf /home/jovyan/.cache
-
-#USER root
 # User will not be able to install packages outside of a virtual environment
 ENV PIP_REQUIRE_VIRTUALENV=true
 USER $NB_UID
