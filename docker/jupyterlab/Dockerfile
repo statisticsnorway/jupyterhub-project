@@ -77,10 +77,12 @@ COPY delta-core_2.12.jar /jupyter/lib/delta-core_2.12.jar
 COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 
 RUN echo "**** install Dapla CLI tools using pipx" && \
+    # Currently this is installed with pip in the common image, remove it so the PATH points to the right one
+    python3 -m pip uninstall ssb-project-cli && \
     # Correctly set path for pipx
     export PATH=$(python3 -m site --user-base)/bin:$PATH && \
     pipx install \
-    ssb-project-cli==1.3.0 && \
+    ssb-project-cli==1.3.1 && \
     pipx install \
     dapla-team-cli==0.1.2 && \
     echo "**** install Dapla libraries" && \
