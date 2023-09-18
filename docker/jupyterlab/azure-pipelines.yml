@@ -205,12 +205,13 @@ jobs:
           key: 'docker_pull_jupyterlab_common_image | "$(Agent.OS)" | cache'
           path: $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
           cacheHitVar: COMMON_IMAGE_CACHE_RESTORED  # Set variable to 'true' if the cache is restored
-      - script: |
-          mkdir -p $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
-          docker load -i $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image/cache.tar
-        displayName: Docker load jupyterlab-common cache
-        continueOnError: 'true'
-        condition: and(not(canceled()), eq(variables.COMMON_IMAGE_CACHE_RESTORED, 'true'))
+      # This file was never found
+      # - script: |
+      #     mkdir -p $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image
+      #     docker load -i $(Pipeline.Workspace)/docker_pull_jupyterlab_common_image/cache.tar
+      #   displayName: Docker load jupyterlab-common cache
+      #   continueOnError: 'true'
+      #   condition: and(not(canceled()), eq(variables.COMMON_IMAGE_CACHE_RESTORED, 'true'))
 
       # Restore dapla-jupyterlab image from cache to save time and memory
       - task: Cache@2
@@ -220,12 +221,13 @@ jobs:
           key: 'docker_pull_latest_dapla_jupyterlab_image | "$(Agent.OS)" | cache'
           path: $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
           cacheHitVar: LATEST_IMAGE_CACHE_RESTORED  # Set variable to 'true' if the cache is restored
-      - script: |
-          mkdir -p $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
-          docker load -i $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image/cache.tar
-        displayName: Docker load dapla-jupyterlab cache
-        continueOnError: 'true'
-        condition: and(not(canceled()), eq(variables.LATEST_IMAGE_CACHE_RESTORED, 'true'))
+      # This file was never found
+      # - script: |
+      #     mkdir -p $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image
+      #     docker load -i $(Pipeline.Workspace)/docker_pull_latest_dapla_jupyterlab_image/cache.tar
+      #   displayName: Docker load dapla-jupyterlab cache
+      #   continueOnError: 'true'
+      #   condition: and(not(canceled()), eq(variables.LATEST_IMAGE_CACHE_RESTORED, 'true'))
 
       # Authenticate Docker to GCR using predefined service connection
       - task: Docker@2
