@@ -1,5 +1,9 @@
 # Jupyterhub-project
-Assembly project for jupyterhub related components
+Build and release container images for:
+- jupyterhub
+- jupyterlab
+- spark-py
+- spark-r
 
 ## Checkout sources
 
