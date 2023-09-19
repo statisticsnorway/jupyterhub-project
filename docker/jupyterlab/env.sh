@@ -7,7 +7,7 @@ perl -pe 's/\$([_A-Z]+)/$ENV{$1}/g' </tmp/spark-defaults.conf >> /usr/local/spar
 # Copy .bashrc and .profile if it doesn't already exist on mounted home volume
 if [ ! -f "$HOME/.bashrc" ]; then
   cp /etc/skel/.bashrc "$HOME/.bashrc"
-  echo "check-git-config.sh" >>"$HOME/.bashrc"
+  printf "\ncheck-git-config.sh" >>"$HOME/.bashrc"
   chown jovyan "$HOME/.bashrc"
 fi
 
