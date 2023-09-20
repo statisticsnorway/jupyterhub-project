@@ -96,9 +96,6 @@ RUN echo "**** install Dapla CLI tools using pipx" && \
     python3 -m pip cache purge && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
-# Add ~/.local/bin to PATH in .bashrc so its called every time the terminal opens
-RUN echo 'export PATH=$(python3 -m site --user-base)/bin:$PATH' >> $HOME/.bashrc
-
 USER root
 # Install pipenv-kernel and delete-pipenv-kernel:
 # - Copy in scripts
