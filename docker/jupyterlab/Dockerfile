@@ -80,7 +80,7 @@ RUN echo "**** install Dapla CLI tools using pipx" && \
     # Currently this is installed with pip in the common image, remove it so the PATH points to the right one
     python3 -m pip uninstall --yes ssb-project-cli && \
     # Correctly set path for pipx
-    export PATH=$(python3 -m site --user-base)/bin:$PATH && \
+    echo 'export PATH=$(python3 -m site --user-base)/bin:$PATH' >> $HOME/.bashrc && \
     pipx install \
     ssb-project-cli==1.3.1 && \
     pipx install \
