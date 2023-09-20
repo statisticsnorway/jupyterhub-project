@@ -185,6 +185,7 @@ jobs:
           repository: ${{ variables.repoName }}
           command: 'build'
           Dockerfile: 'docker/jupyterlab/Dockerfile'
+          arguments: '-m 4g --memory-swap=6g'  # See if this resolves memory issues
           tags: |
             ${{ variables.imageTagLatest }}
             ${{ variables.imageTagBeforeVulnerabilityScan }}
