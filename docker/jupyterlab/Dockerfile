@@ -16,7 +16,7 @@ RUN echo "**** install Dapla CLI tools using pipx" && \
     dapla-toolbelt==1.8.1 \
     ssb-datadoc==0.3.0 \
     kvakk-git-tools==2.2.1 \
-    ssb_spark_tools==0.1.12 && \
+    ssb_spark_tools==0.1.12 \
     echo "**** install other tools" && \
     python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} google-cloud-storage venv-pack nbdev && \
     python3 -m pip cache purge && \
