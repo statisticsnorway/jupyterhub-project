@@ -78,7 +78,7 @@ COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 
 RUN echo "**** install Dapla libraries" && \
     python3 -m pip install \
-    dapla-toolbelt==1.8.1 \
+    dapla-toolbelt==1.8.3 \
     ssb-datadoc==0.3.0 \
     ssb-project-cli==1.3.1 \
     dapla-team-cli==0.1.2 \
