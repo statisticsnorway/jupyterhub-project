@@ -1,4 +1,4 @@
-name: Datadoc Dapla Lab CI
+name: Dapla Lab CI
 
 on:
   push:
