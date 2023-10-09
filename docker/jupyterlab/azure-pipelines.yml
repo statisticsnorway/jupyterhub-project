@@ -12,6 +12,7 @@ trigger:
       - docker/jupyterhub
       - docker/spark-py
       - docker/spark-r
+      - '.github/workflows/dapla-lab-ci.yml'
 
 schedules:
   - cron: "0 12 1 * *"
