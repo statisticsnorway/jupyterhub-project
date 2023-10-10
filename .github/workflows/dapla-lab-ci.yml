@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'
-          distribution: 'openjdk'
+          distribution: 'adopt'
       - name: Build Maven Project
         run: mvn clean package -DskipTests=true -Dmaven.javadoc.skip=true -U -P ssb-bip --batch-mode -Djdk.tls.client.protocols="TLSv1.2"
         working-directory: build
