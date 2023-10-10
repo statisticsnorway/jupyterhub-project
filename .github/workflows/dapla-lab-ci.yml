@@ -37,6 +37,17 @@ jobs:
           workload_identity_provider: "projects/848539402404/locations/global/workloadIdentityPools/gh-actions/providers/gh-actions"
           service_account: "gh-actions-dapla-lab@artifact-registry-5n.iam.gserviceaccount.com"
           token_format: "access_token"
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+      - name: Build Maven Project
+        directory: build
+        run: mvn clean package -DskipTests=true -Dmaven.javadoc.skip=true -U -P ssb-bip --batch-mode -Djdk.tls.client.protocols="TLSv1.2"
+      - name: Copy Artifact
+        directory: build
+        run: cp target/*.jar $GITHUB_WORKSPACE/jupyter/
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
