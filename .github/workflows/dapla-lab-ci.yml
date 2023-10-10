@@ -19,6 +19,7 @@ on:
 env:
   REGISTRY: europe-north1-docker.pkg.dev/artifact-registry-5n/dapla-lab-docker/onyxia
   IMAGE: jupyter-python-dapla
+  BASE_IMAGE: jupyterlab-common:latest
   TAG: ${{ github.ref_name }}-${{ github.sha }}
 
 jobs:
@@ -68,6 +69,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           file: docker/jupyterlab/Dockerfile
+          build-args: base_image=${{ env.REGISTRY }}/${{ env.BASE_IMAGE }}
           push: true
           tags: |
             ${{ steps.metadata.outputs.tags }}
