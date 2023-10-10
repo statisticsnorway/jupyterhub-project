@@ -42,11 +42,13 @@ jobs:
         with:
           java-version: '11'
       - name: Build Maven Project
-        directory: build
         run: mvn clean package -DskipTests=true -Dmaven.javadoc.skip=true -U -P ssb-bip --batch-mode -Djdk.tls.client.protocols="TLSv1.2"
+        with:
+          context: build
       - name: Copy Artifact
-        directory: build
         run: cp target/*.jar $GITHUB_WORKSPACE/jupyter/
+        with:
+          context: build
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
