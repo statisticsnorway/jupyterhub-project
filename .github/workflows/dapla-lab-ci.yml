@@ -68,7 +68,7 @@ jobs:
         with:
           context: docker/jupyterlab/
           platforms: linux/amd64,linux/arm64
-          file: Dockerfile
+          file: docker/jupyterlab/Dockerfile
           build-args: base_image=${{ env.REGISTRY }}/${{ env.BASE_IMAGE }}
           push: true
           tags: |
