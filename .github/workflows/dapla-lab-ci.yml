@@ -46,7 +46,7 @@ jobs:
         run: mvn clean package -DskipTests=true -Dmaven.javadoc.skip=true -U -P ssb-bip --batch-mode -Djdk.tls.client.protocols="TLSv1.2"
         working-directory: build
       - name: Copy Artifact
-        run: cp target/*.jar $GITHUB_WORKSPACE/jupyter/
+        run: cp target/*.jar $GITHUB_WORKSPACE/docker/jupyterlab
         working-directory: build
 
       - name: Set up QEMU
