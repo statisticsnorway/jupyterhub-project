@@ -3,13 +3,11 @@ name: Dapla Lab CI
 on:
   push:
     branches:
-      - "**"
+      - "main"
     paths:
       - 'docker/jupyterlab/**'
       - 'build/**'
       - '.github/workflows/dapla-lab-ci.yml'
-    tags:
-      - "*"
   pull_request:
     paths:
       - 'docker/jupyterlab/**'
