@@ -27,9 +27,9 @@ jobs:
       id-token: "write"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: "Authenticate to Google Cloud"
+        uses: actions/checkout@v3
       - id: "auth"
-        name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v1.1.1"
         with:
           workload_identity_provider: "projects/848539402404/locations/global/workloadIdentityPools/gh-actions/providers/gh-actions"
@@ -44,7 +44,9 @@ jobs:
         run: mvn clean package -DskipTests=true -Dmaven.javadoc.skip=true -U -P ssb-bip --batch-mode -Djdk.tls.client.protocols="TLSv1.2"
         working-directory: build
       - name: Copy Artifact
-        run: cp target/*.jar $GITHUB_WORKSPACE/docker/jupyterlab
+        run:  |
+          cp target/*.jar $GITHUB_WORKSPACE/docker/jupyterlab
+          rm -Rf target
         working-directory: build
 
       - name: Set up QEMU
@@ -73,6 +75,11 @@ jobs:
             type=semver,pattern=v{{major}}
             type=sha
             type=raw,value=${{ env.TAG }}, enable=true
+      - name: Report disk space usage
+        run: |
+          sudo dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr | head
+          df -h .
+          sudo du -hx -d 4 --threshold=1G /usr/ | sort -hr | head
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
