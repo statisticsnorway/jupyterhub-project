@@ -36,7 +36,7 @@ jobs:
           service_account: "gh-actions-dapla-lab@artifact-registry-5n.iam.gserviceaccount.com"
           token_format: "access_token"
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'adopt'
@@ -62,7 +62,7 @@ jobs:
           password: "${{ steps.auth.outputs.access_token }}"
       - name: Docker meta
         id: metadata
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
           # Docker tags based on the following events/attributes
