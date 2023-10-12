@@ -1,4 +1,5 @@
-FROM eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest
+ARG base_image="eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest"
+FROM ${base_image}
 
 ARG spark_version="3.3.1"
 ARG hadoop_version="3"
