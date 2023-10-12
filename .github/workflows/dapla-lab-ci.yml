@@ -36,7 +36,7 @@ jobs:
           service_account: "gh-actions-dapla-lab@artifact-registry-5n.iam.gserviceaccount.com"
           token_format: "access_token"
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'adopt'
@@ -49,8 +49,6 @@ jobs:
           rm -Rf target
         working-directory: build
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
@@ -62,18 +60,17 @@ jobs:
           password: "${{ steps.auth.outputs.access_token }}"
       - name: Docker meta
         id: metadata
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
           # Docker tags based on the following events/attributes
           tags: |
-            type=schedule
             type=ref,event=branch
             type=ref,event=pr
+            type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern=v{{version}}
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{major}}
-            type=sha
             type=raw,value=${{ env.TAG }}, enable=true
       - name: Free up disk space
         run: |
@@ -91,7 +88,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: docker/jupyterlab/
-          platforms: linux/amd64,linux/arm64
           file: docker/jupyterlab/Dockerfile
           build-args: base_image=${{ env.REGISTRY }}/${{ env.BASE_IMAGE }}
           push: true
