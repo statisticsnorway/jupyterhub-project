@@ -75,6 +75,13 @@ jobs:
             type=semver,pattern=v{{major}}
             type=sha
             type=raw,value=${{ env.TAG }}, enable=true
+      - name: Free up disk space
+        run: |
+          sudo rm -rf \
+          /usr/share/dotnet \
+          /opt/ghc \
+          /usr/local/.ghcup
+          docker image prune -af
       - name: Report disk space usage
         run: |
           sudo dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr | head
