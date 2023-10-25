@@ -1,4 +1,5 @@
-FROM eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest
+ARG base_image="eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest"
+FROM ${base_image}
 
 ARG spark_version="3.3.1"
 ARG hadoop_version="3"
@@ -78,10 +79,10 @@ COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 
 RUN echo "**** install Dapla libraries" && \
     python3 -m pip install \
-    dapla-toolbelt==1.8.1 \
-    ssb-datadoc==0.3.0 \
     ssb-project-cli==1.3.3 \
-    dapla-team-cli==0.1.2 \
+    dapla-toolbelt==1.8.4 \
+    ssb-datadoc==0.3.3 \
+    dapla-team-cli==0.3.2 \
     kvakk-git-tools==2.2.1 \
     ssb_spark_tools==0.1.12 && \
     echo "**** install other tools" && \
