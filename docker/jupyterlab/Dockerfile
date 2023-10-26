@@ -80,7 +80,7 @@ COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 COPY requirements.txt /tmp/requirements.txt
 
 RUN echo "**** install Dapla libraries" && \
-    python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
+    python3 -m pip install --no-cache-dir -r /tmp/requirements.txt && \
     echo "**** install other tools" && \
     python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} google-cloud-storage venv-pack nbdev && \
     python3 -m pip cache purge && \
