@@ -84,7 +84,6 @@ RUN echo "**** install Dapla libraries" && \
     echo "**** install other tools" && \
     python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} google-cloud-storage venv-pack nbdev && \
     python3 -m pip cache purge && \
-    rm -f /tmp/requirements.txt && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 USER root
