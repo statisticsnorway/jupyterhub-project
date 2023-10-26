@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/docker/jupyterlab"
+    schedule:
+      interval: weekly

@@ -1,5 +1,4 @@
-ARG base_image="eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest"
-FROM ${base_image}
+FROM eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest
 
 ARG spark_version="3.3.1"
 ARG hadoop_version="3"
@@ -77,17 +76,15 @@ COPY spark-avro_2.12.jar /jupyter/lib/spark-avro_2.12.jar
 COPY delta-core_2.12.jar /jupyter/lib/delta-core_2.12.jar
 COPY delta-storage.jar /jupyter/lib/delta-storage.jar
 
+# Copy the requirements.txt file into the container
+COPY requirements.txt /tmp/requirements.txt
+
 RUN echo "**** install Dapla libraries" && \
-    python3 -m pip install \
-    ssb-project-cli==1.3.3 \
-    dapla-toolbelt==1.8.4 \
-    ssb-datadoc==0.3.3 \
-    dapla-team-cli==0.3.2 \
-    kvakk-git-tools==2.2.1 \
-    ssb_spark_tools==0.1.12 && \
+    python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
     echo "**** install other tools" && \
     python3 -m pip install pandas-gbq pyspark==${APACHE_SPARK_VERSION} google-cloud-storage venv-pack nbdev && \
     python3 -m pip cache purge && \
+    rm -f /tmp/requirements.txt && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 USER root
