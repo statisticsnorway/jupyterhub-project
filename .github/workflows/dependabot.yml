@@ -9,3 +9,7 @@ updates:
     directory: "/docker/jupyterlab" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - "*"
