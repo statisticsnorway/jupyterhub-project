@@ -37,13 +37,13 @@ jobs:
       id: filter
       with:
         filters: |
-          dapla-jupyterhub:
+          jupyterhub:
             - 'docker/jupyterhub/**'
             - '.github/workflows/docker-build-other-images.yml'
-          dapla-spark-r:
+          spark-r:
             - 'docker/spark-r/**'
             - '.github/workflows/docker-build-other-images.yml'
-          dapla-spark-py:
+          spark-py:
             - 'docker/spark-py/**'
             - '.github/workflows/docker-build-other-images.yml'
 
@@ -81,7 +81,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ matrix.image }}
+          images: ${{ env.REGISTRY }}/dapla-${{ matrix.image }}
           # Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -95,13 +95,13 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v4
         with:
-          context: docker/
-          file: docker/Dockerfile
+          context: docker/${{ matrix.image }}
+          file: docker/${{ matrix.image }}/Dockerfile
           push: true
           tags: |
             ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ matrix.image }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ matrix.image }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/dapla-${{ matrix.image }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/dapla-${{ matrix.image }}:buildcache,mode=max
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
