@@ -1,4 +1,4 @@
-name: Dapla Lab CI
+name: Docker Build Jupyterlab
 
 on:
   push:
@@ -7,16 +7,16 @@ on:
     paths:
       - 'docker/jupyterlab/**'
       - 'build/**'
-      - '.github/workflows/dapla-lab-ci.yml'
+      - '.github/workflows/docker-build-jupyterlab.yml'
   pull_request:
     paths:
       - 'docker/jupyterlab/**'
       - 'build/**'
-      - '.github/workflows/dapla-lab-ci.yml'
+      - '.github/workflows/docker-build-jupyterlab.yml'
 
 env:
-  REGISTRY: europe-north1-docker.pkg.dev/artifact-registry-5n/dapla-lab-docker/onyxia
-  IMAGE: jupyter-python-dapla
+  REGISTRY: europe-north1-docker.pkg.dev/artifact-registry-5n/dapla-stat-docker/jupyter
+  IMAGE: jupyterlab-dapla
   BASE_IMAGE: jupyterlab-common:latest
   TAG: ${{ github.ref_name }}-${{ github.sha }}
 
@@ -33,7 +33,7 @@ jobs:
         uses: "google-github-actions/auth@v1.1.1"
         with:
           workload_identity_provider: "projects/848539402404/locations/global/workloadIdentityPools/gh-actions/providers/gh-actions"
-          service_account: "gh-actions-dapla-lab@artifact-registry-5n.iam.gserviceaccount.com"
+          service_account: "gh-actions-dapla-stat@artifact-registry-5n.iam.gserviceaccount.com"
           token_format: "access_token"
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -56,12 +56,6 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
-          username: "oauth2accesstoken"
-          password: "${{ steps.auth.outputs.access_token }}"
-      - name: Login to Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: "eu.gcr.io"
           username: "oauth2accesstoken"
           password: "${{ steps.auth.outputs.access_token }}"
       - name: Docker meta
@@ -87,10 +81,9 @@ jobs:
           docker image prune -af
       - name: Report disk space usage
         run: |
-          sudo dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr | head
           df -h .
-          sudo du -hx -d 4 --threshold=1G /usr/ | sort -hr | head
       - name: Build and push
+        id: docker_build
         uses: docker/build-push-action@v4
         with:
           context: docker/jupyterlab/
@@ -100,5 +93,7 @@ jobs:
           tags: |
             ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE }}:buildcache,mode=max
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
