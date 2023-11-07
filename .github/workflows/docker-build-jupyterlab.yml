@@ -93,7 +93,7 @@ jobs:
           tags: |
             ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/dapla-${{ env.IMAGE }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/dapla-${{ env.IMAGE }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE }}:buildcache,mode=max
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
