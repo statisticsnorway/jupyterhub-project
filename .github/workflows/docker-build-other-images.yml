@@ -1,9 +1,9 @@
 name: Docker Build Other Images
 
 on:
+  release:
+    types: [published]
   push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
     branches:
       - "main"
     paths:
@@ -30,13 +30,14 @@ jobs:
       pull-requests: read
       contents: read
     outputs:
-      # Expose matched filters as job output variable
-      images: ${{ steps.filter.outputs.changes }}
+      # If the triggering event is a release, build all images, otherwise only build those with changes
+      images: ${{ github.event_name == 'release' && '["jupyterhub", "spark-r", "spark-py"]' || steps.filter.outputs.changes }}
     steps:
     - name: "Check out repo"
       uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2
       id: filter
+      if: github.event_name != 'release'
       with:
         filters: |
           jupyterhub:
@@ -54,7 +55,7 @@ jobs:
     strategy:
       matrix:
         # Parse JSON array containing names of all filters matching any of changed files
-        # e.g. ['dapla-jupyterhub', 'dapla-spark-r'] if both package folders contain changes
+        # e.g. ['jupyterhub', 'spark-r'] if both package folders contain changes
         image: ${{ fromJSON(needs.changes.outputs.images) }}
     permissions:
       contents: "read"
