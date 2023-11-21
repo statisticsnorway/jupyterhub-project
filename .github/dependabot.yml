@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/docker/jupyterlab" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
     groups:
       jupyterlab-included-packages:
         patterns:
