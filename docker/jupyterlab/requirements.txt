@@ -1,6 +1,6 @@
-ssb-project-cli==1.3.6
+ssb-project-cli==1.3.8
 dapla-toolbelt==1.8.4
 ssb-datadoc==0.3.3
-dapla-team-cli==0.3.2
+dapla-team-cli==0.3.3
 kvakk-git-tools==2.2.2
 ssb_spark_tools==0.1.12
