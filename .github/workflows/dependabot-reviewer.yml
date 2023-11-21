@@ -19,7 +19,7 @@ jobs:
           private-key: ${{ secrets.DAPLA_BOT_PRIVATE_KEY }}
       - name: Dependabot metadata
         id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v1.3.1
+        uses: dependabot/fetch-metadata@v1
       - name: Enable auto-merge for Dependabot PRs
         run: gh pr merge --auto --merge "$PR_URL"
         env:
