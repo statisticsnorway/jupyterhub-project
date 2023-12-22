@@ -105,4 +105,9 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 
 # User will not be able to install packages outside of a virtual environment
 ENV PIP_REQUIRE_VIRTUALENV=true
+
+# Add base gitconfig and DaplaLab init script
+COPY --chmod=0755 DapaLab/init.sh /opt/onyxia-init.sh
+COPY --chown=${NB_UID}:${NB_UID} DapaLab/base_gitconfig $HOME/.gitconfig
+
 USER $NB_UID
