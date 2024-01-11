@@ -31,6 +31,6 @@ if [ -n "$GIT_REPOSITORY" ] && [ -f "$NETRC_FILE" ]; then
     fi
   fi
 fi
-
 echo "execution of $*"
-exec "$@" "$INIT_PATH"
+cd "$INIT_PATH"
+exec "$@"
