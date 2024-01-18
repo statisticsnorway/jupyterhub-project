@@ -110,4 +110,7 @@ ENV PIP_REQUIRE_VIRTUALENV=true
 COPY --chmod=0755 DapaLab/init.sh /opt/onyxia-init.sh
 COPY --chown=${NB_UID}:${NB_UID} DapaLab/base_gitconfig $HOME/.gitconfig
 
+# Ensure that user owns everything in it's home directory
+RUN chown $NB_UID:users -R $HOME
+
 USER $NB_UID
