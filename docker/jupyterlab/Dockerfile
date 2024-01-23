@@ -1,4 +1,4 @@
-ARG base_image="eu.gcr.io/prod-bip/ssb/statistikktjenester/jupyterlab-common:latest"
+ARG base_image="europe-north1-docker.pkg.dev/artifact-registry-5n/dapla-stat-docker/jupyter/jupyterlab-common:latest"
 FROM ${base_image}
 
 ARG spark_version="3.3.1"
