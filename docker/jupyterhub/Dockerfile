@@ -11,7 +11,7 @@ RUN apt update && \
     apt-get -y dist-upgrade && \
     apt-get -y remove --auto-remove vim
 
-RUN pip install tokenexchangeauthenticator==0.3.4  && \
+RUN pip install tokenexchangeauthenticator==0.3.6  && \
     pip install jupyterhub-kubespawner==5.0.0
 
 # Set localtime to Europe/Oslo
