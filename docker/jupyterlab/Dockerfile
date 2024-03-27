@@ -105,6 +105,8 @@ RUN chown -R $NB_UID "$R_LIBS_USER"
 
 # User will not be able to install packages outside of a virtual environment
 ENV PIP_REQUIRE_VIRTUALENV=true
+# Set template version for ssb-project-cli (https://github.com/statisticsnorway/ssb-project-template-stat)
+ENV STAT_TEMPLATE_DEFAULT_REFERENCE="1.1.5"
 
 # Add base gitconfig and DaplaLab init script
 COPY --chmod=0755 DapaLab/init.sh /opt/onyxia-init.sh
